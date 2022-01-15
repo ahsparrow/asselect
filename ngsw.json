@@ -1,7 +1,7 @@
 {
   "configVersion": 1,
-  "timestamp": 1642247396084,
-  "index": "/asselect/index.html",
+  "timestamp": 1642247542656,
+  "index": "/index.html",
   "assetGroups": [
     {
       "name": "app",
@@ -11,13 +11,13 @@
         "ignoreVary": true
       },
       "urls": [
-        "/asselect/favicon.ico",
-        "/asselect/index.html",
-        "/asselect/main.2134b82ef4cec284.js",
-        "/asselect/manifest.webmanifest",
-        "/asselect/polyfills.0fe96f0d8a7fa9bb.js",
-        "/asselect/runtime.0a1f74739c1431cc.js",
-        "/asselect/styles.94c102cabef17e59.css"
+        "/favicon.ico",
+        "/index.html",
+        "/main.2134b82ef4cec284.js",
+        "/manifest.webmanifest",
+        "/polyfills.0fe96f0d8a7fa9bb.js",
+        "/runtime.0a1f74739c1431cc.js",
+        "/styles.94c102cabef17e59.css"
       ],
       "patterns": []
     },
@@ -29,43 +29,43 @@
         "ignoreVary": true
       },
       "urls": [
-        "/asselect/assets/icons/favicon-16x16.png",
-        "/asselect/assets/icons/favicon-32x32.png",
-        "/asselect/assets/icons/icon_x144.png",
-        "/asselect/assets/icons/maskable_icon_x128.png",
-        "/asselect/assets/icons/maskable_icon_x144.png",
-        "/asselect/assets/icons/maskable_icon_x152.png",
-        "/asselect/assets/icons/maskable_icon_x192.png",
-        "/asselect/assets/icons/maskable_icon_x384.png",
-        "/asselect/assets/icons/maskable_icon_x512.png",
-        "/asselect/assets/icons/maskable_icon_x72.png",
-        "/asselect/assets/icons/maskable_icon_x96.png",
-        "/asselect/assets/yaixm.json"
+        "/assets/icons/favicon-16x16.png",
+        "/assets/icons/favicon-32x32.png",
+        "/assets/icons/icon_x144.png",
+        "/assets/icons/maskable_icon_x128.png",
+        "/assets/icons/maskable_icon_x144.png",
+        "/assets/icons/maskable_icon_x152.png",
+        "/assets/icons/maskable_icon_x192.png",
+        "/assets/icons/maskable_icon_x384.png",
+        "/assets/icons/maskable_icon_x512.png",
+        "/assets/icons/maskable_icon_x72.png",
+        "/assets/icons/maskable_icon_x96.png",
+        "/assets/yaixm.json"
       ],
       "patterns": []
     }
   ],
   "dataGroups": [],
   "hashTable": {
-    "/asselect/assets/icons/favicon-16x16.png": "03661c1758a83c1e9c21179ad77bfb137555158f",
-    "/asselect/assets/icons/favicon-32x32.png": "8781dc8cd19376f8b13df48f5e7e6d357ff03402",
-    "/asselect/assets/icons/icon_x144.png": "6cfc626815938fe19c4c6c180983321c8c7e5495",
-    "/asselect/assets/icons/maskable_icon_x128.png": "1b70ba3e9252d5aba419011e2685db846fc66928",
-    "/asselect/assets/icons/maskable_icon_x144.png": "e61c87d79eaa60a786d3a3c9fbe03fb81b2fecfc",
-    "/asselect/assets/icons/maskable_icon_x152.png": "c54a160425af59e32992fcba9b1bed97d61f2d8d",
-    "/asselect/assets/icons/maskable_icon_x192.png": "28fa1af78dfeda6187ec6b79637c123f12e9daf6",
-    "/asselect/assets/icons/maskable_icon_x384.png": "0b6765e43f96ffcf7f10ad7c96919ddebf861e26",
-    "/asselect/assets/icons/maskable_icon_x512.png": "000a3eb2e344f48cb45d33eec9833c9296f02075",
-    "/asselect/assets/icons/maskable_icon_x72.png": "6f57567956bc337495bf4d7efad46d74da52fd20",
-    "/asselect/assets/icons/maskable_icon_x96.png": "9c179001d0d3e850a676f70245d85f11f04a2760",
-    "/asselect/assets/yaixm.json": "a37742d11906927b5c210a8b118a0a4284a07052",
-    "/asselect/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
-    "/asselect/index.html": "c08ddefcb4fa8cc940ab768b8d5af655d23246f0",
-    "/asselect/main.2134b82ef4cec284.js": "054b8e5238aaa2c1b14c29a6187fecc9291b84d6",
-    "/asselect/manifest.webmanifest": "f86655eac638be539dd4fbda8e79b54a31a4314b",
-    "/asselect/polyfills.0fe96f0d8a7fa9bb.js": "f4458582d7d09de68797395a14ca5cc3b448d554",
-    "/asselect/runtime.0a1f74739c1431cc.js": "beafb12668010d912a8c846b06e16fd78ee2c1e4",
-    "/asselect/styles.94c102cabef17e59.css": "1c745f943aef86eab1f49bc6b61227a2d98f8362"
+    "/assets/icons/favicon-16x16.png": "03661c1758a83c1e9c21179ad77bfb137555158f",
+    "/assets/icons/favicon-32x32.png": "8781dc8cd19376f8b13df48f5e7e6d357ff03402",
+    "/assets/icons/icon_x144.png": "6cfc626815938fe19c4c6c180983321c8c7e5495",
+    "/assets/icons/maskable_icon_x128.png": "1b70ba3e9252d5aba419011e2685db846fc66928",
+    "/assets/icons/maskable_icon_x144.png": "e61c87d79eaa60a786d3a3c9fbe03fb81b2fecfc",
+    "/assets/icons/maskable_icon_x152.png": "c54a160425af59e32992fcba9b1bed97d61f2d8d",
+    "/assets/icons/maskable_icon_x192.png": "28fa1af78dfeda6187ec6b79637c123f12e9daf6",
+    "/assets/icons/maskable_icon_x384.png": "0b6765e43f96ffcf7f10ad7c96919ddebf861e26",
+    "/assets/icons/maskable_icon_x512.png": "000a3eb2e344f48cb45d33eec9833c9296f02075",
+    "/assets/icons/maskable_icon_x72.png": "6f57567956bc337495bf4d7efad46d74da52fd20",
+    "/assets/icons/maskable_icon_x96.png": "9c179001d0d3e850a676f70245d85f11f04a2760",
+    "/assets/yaixm.json": "a37742d11906927b5c210a8b118a0a4284a07052",
+    "/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
+    "/index.html": "2012070cb05693159f65a5bb88fcf09a73b36f16",
+    "/main.2134b82ef4cec284.js": "054b8e5238aaa2c1b14c29a6187fecc9291b84d6",
+    "/manifest.webmanifest": "f86655eac638be539dd4fbda8e79b54a31a4314b",
+    "/polyfills.0fe96f0d8a7fa9bb.js": "f4458582d7d09de68797395a14ca5cc3b448d554",
+    "/runtime.0a1f74739c1431cc.js": "beafb12668010d912a8c846b06e16fd78ee2c1e4",
+    "/styles.94c102cabef17e59.css": "1c745f943aef86eab1f49bc6b61227a2d98f8362"
   },
   "navigationUrls": [
     {
