@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1648821934128,
+  "timestamp": 1650709302602,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -58,7 +58,7 @@
     "/assets/icons/maskable_icon_x512.png": "000a3eb2e344f48cb45d33eec9833c9296f02075",
     "/assets/icons/maskable_icon_x72.png": "6f57567956bc337495bf4d7efad46d74da52fd20",
     "/assets/icons/maskable_icon_x96.png": "9c179001d0d3e850a676f70245d85f11f04a2760",
-    "/assets/yaixm.json": "2c52f7ceee7bb0aac63df7dde727f1ea09c91199",
+    "/assets/yaixm.json": "29572aa2f62d803b5cd55fbe5854883977ccf560",
     "/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
     "/index.html": "668f07fc63ee2e27aa99e615d7caf6554d7080ac",
     "/main.ce92676a357f5c17.js": "3e19b1df2ced9894e337402cb4e9a5e6def34e97",
