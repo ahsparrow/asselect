@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1652632825116,
+  "timestamp": 1653579887495,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -14,7 +14,7 @@
         "/assets/yaixm.json",
         "/favicon.ico",
         "/index.html",
-        "/main.ce92676a357f5c17.js",
+        "/main.af86e6268dca93fb.js",
         "/manifest.webmanifest",
         "/polyfills.0fe96f0d8a7fa9bb.js",
         "/runtime.0a1f74739c1431cc.js",
@@ -58,10 +58,10 @@
     "/assets/icons/maskable_icon_x512.png": "000a3eb2e344f48cb45d33eec9833c9296f02075",
     "/assets/icons/maskable_icon_x72.png": "6f57567956bc337495bf4d7efad46d74da52fd20",
     "/assets/icons/maskable_icon_x96.png": "9c179001d0d3e850a676f70245d85f11f04a2760",
-    "/assets/yaixm.json": "4c4da97bbf664740848d31d65d208eb5eaca926f",
+    "/assets/yaixm.json": "812c1f96ba847e21a6bb42820d9ed57126f44140",
     "/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
-    "/index.html": "d605ee07923044dd92109d5bfd70ebf4354a3709",
-    "/main.ce92676a357f5c17.js": "3e19b1df2ced9894e337402cb4e9a5e6def34e97",
+    "/index.html": "7430758cbc1bb6666d51f29b6b6782aaa8275cc6",
+    "/main.af86e6268dca93fb.js": "450869f5bab2ad37bd5659f24918d90fbd699165",
     "/manifest.webmanifest": "f86655eac638be539dd4fbda8e79b54a31a4314b",
     "/polyfills.0fe96f0d8a7fa9bb.js": "f4458582d7d09de68797395a14ca5cc3b448d554",
     "/runtime.0a1f74739c1431cc.js": "beafb12668010d912a8c846b06e16fd78ee2c1e4",
