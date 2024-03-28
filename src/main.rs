@@ -1,7 +1,7 @@
 use gloo::net::http::Request;
 use leptos::*;
 
-use yaixm::Yaixm;
+use yaixm::{rat_names, Yaixm};
 
 mod yaixm;
 
@@ -12,11 +12,55 @@ fn App() -> impl IntoView {
     view! {
         { move || match async_data.get() {
             Some(resource) => match resource {
-                Some(yaixm) => view! { <p>"Release date: "{ yaixm.release.airac_date }</p> },
-                None => view! {<p>"Error loading YAXIM"</p> }
+                Some(yaixm) => {
+                    view! { <MainView yaixm=yaixm/> }.into_view()
+                },
+                None => view! { <p>"Error loading YAXIM"</p> }.into_view()
             }
-            None => view! { <p>"Loading YAIXM..."</p> }
+            None => view! { <p>"Loading YAIXM, please wait..."</p> }.into_view()
         }}
+    }
+}
+
+#[component]
+fn MainView(yaixm: Yaixm) -> impl IntoView {
+    let rat_names = rat_names(&yaixm);
+    view! {
+        <div class="container block">
+            <div class="columns">
+                <div class="column is-one-third">
+                <div class="field">
+                    <label class="label">
+                    {"ATZ"}
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                        <select name="atz">
+                            <option>{"Class D"}</option>
+                            <option>{"Control Zone"}</option>
+                        </select>
+                        </div>
+                    </div>
+                    </label>
+                </div>
+                </div>
+            </div>
+
+            <div>
+                <ul>
+                    { rat_names.into_iter()
+                        .map(|n| view! {
+                            <div class="field">
+                            <label class="checkbox">
+                            <input type="checkbox" class="mr-2"/>
+                            {n}
+                            </label>
+                            </div>
+                        })
+                        .collect_view()
+                    }
+                </ul>
+            </div>
+        </div>
     }
 }
 
