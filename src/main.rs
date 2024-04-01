@@ -1,6 +1,7 @@
 use gloo::file::{Blob, ObjectUrl};
 use gloo::net::http::Request;
 use leptos::*;
+use std::collections::HashSet;
 
 use yaixm::{rat_names, Yaixm};
 
@@ -25,7 +26,6 @@ fn App() -> impl IntoView {
 
 #[component]
 fn MainView(yaixm: Yaixm) -> impl IntoView {
-    let rat_names = rat_names(&yaixm);
     view! {
         <div class="container block">
             <div class="columns">
@@ -46,21 +46,7 @@ fn MainView(yaixm: Yaixm) -> impl IntoView {
                 </div>
             </div>
 
-            <div>
-                <ul>
-                    { rat_names.into_iter()
-                        .map(|n| view! {
-                            <div class="field">
-                            <label class="checkbox">
-                            <input name={n.clone()} type="checkbox" class="mr-2"/>
-                            {n}
-                            </label>
-                            </div>
-                        })
-                        .collect_view()
-                    }
-                </ul>
-            </div>
+            <RatView rat_names=rat_names(&yaixm) on_change=|x| {logging::log! ("{:?}", x)}/>
 
             <div class="container block">
                 <div class="mx-4">
@@ -79,6 +65,44 @@ fn MainView(yaixm: Yaixm) -> impl IntoView {
                 </button>
                 </div>
             </div>
+        </div>
+    }
+}
+
+#[component]
+fn RatView(
+    rat_names: Vec<String>,
+    #[prop(into)] on_change: Callback<HashSet<String>>,
+) -> impl IntoView {
+    let (get, set) = create_signal(HashSet::<String>::new());
+    view! {
+        <div>
+            <ul>
+                { rat_names.into_iter()
+                    .map(|n| {
+                        let nx = n.clone();
+                        let nz = n.clone();
+                        let checked = move || get().contains(&nz);
+                        view! {
+                            <div class="field">
+                            <label class="checkbox">
+                            <input name={&n} type="checkbox" class="mr-2" prop:checked={checked} on:change = move |ev| {
+                                if event_target_checked(&ev) {
+                                    set.update(|s| { s.insert(nx.clone()); });
+                                } else {
+                                    set.update(|s| { s.remove(&nx); });
+                                }
+                                on_change(get())
+                            }/>
+                            {&n}
+                            </label>
+                            </div>
+                        }
+                    })
+                    .collect_view()
+                }
+            </ul>
+            <button on:click = move |_| { set.update(|s|  s.clear()); on_change(get()) }>Clear</button>
         </div>
     }
 }
