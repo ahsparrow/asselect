@@ -28,23 +28,7 @@ fn App() -> impl IntoView {
 fn MainView(yaixm: Yaixm) -> impl IntoView {
     view! {
         <div class="container block">
-            <div class="columns">
-                <div class="column is-one-third">
-                <div class="field">
-                    <label class="label">
-                    {"ATZ"}
-                    <div class="control">
-                        <div class="select is-fullwidth">
-                        <select name="atz">
-                            <option>{"Class D"}</option>
-                            <option>{"Control Zone"}</option>
-                        </select>
-                        </div>
-                    </div>
-                    </label>
-                </div>
-                </div>
-            </div>
+            <AirspaceView on_change=|(a, b)| {logging::log!("{}, {}", a, b)}/>
 
             <RatView rat_names=rat_names(&yaixm) on_change=|x| {logging::log! ("{:?}", x)}/>
 
@@ -59,11 +43,35 @@ fn MainView(yaixm: Yaixm) -> impl IntoView {
                         a.set_download("openair.txt");
                         a.set_href(&object_url);
                         a.click();
-                    }
-                >
+                    }>
                     {"Get Airspace"}
                 </button>
                 </div>
+            </div>
+        </div>
+    }
+}
+
+#[component]
+fn AirspaceView(#[prop(into)] on_change: Callback<(String, String)>) -> impl IntoView {
+    view! {
+        <div class="columns">
+            <div class="column is-one-third">
+            <div class="field">
+                <label class="label">
+                {"ATZ"}
+                <div class="control">
+                    <div class="select is-fullwidth" on:change=move |ev| {
+                        on_change(("atz".to_string(), event_target_value(&ev)))
+            }>
+                    <select name="atz">
+                        <option value="classd">{"Class D"}</option>
+                        <option value= "ctr">{"Control Zone"}</option>
+                    </select>
+                    </div>
+                </div>
+                </label>
+            </div>
             </div>
         </div>
     }
