@@ -5,6 +5,7 @@ use std::collections::HashSet;
 
 use yaixm::{rat_names, Yaixm};
 
+mod settings;
 mod yaixm;
 
 #[component]
