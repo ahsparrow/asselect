@@ -3,8 +3,13 @@ use gloo::net::http::Request;
 use leptos::*;
 use std::collections::HashSet;
 
+use components::{
+    airspace_tab::AirspaceTab, extra_tab::ExtraTab, notam_tab::NotamTab, option_tab::OptionTab,
+    tabs::Tabs,
+};
 use yaixm::{rat_names, Yaixm};
 
+mod components;
 mod settings;
 mod yaixm;
 
@@ -27,8 +32,52 @@ fn App() -> impl IntoView {
 
 #[component]
 fn MainView(yaixm: Yaixm) -> impl IntoView {
+    let tab_names = vec![
+        "Main".to_string(),
+        "Option".to_string(),
+        "Extra".to_string(),
+        "NOTAM".to_string(),
+        "About".to_string(),
+    ];
+
     view! {
+        <header class="hero is-small is-primary block">
+            <div class="hero-body">
+            <div class="container">
+                <div class="title is-4">
+                {"ASSelect - UK Airspace"}
+                </div>
+            </div>
+            </div>
+        </header>
+
         <div class="container block">
+            <Tabs tab_names>
+                <AirspaceTab />
+                <OptionTab />
+                <ExtraTab />
+                <NotamTab />
+            </Tabs>
+        </div>
+    }
+}
+
+/*
+#[component]
+fn MainView(yaixm: Yaixm) -> impl IntoView {
+    view! {
+        <header class="hero is-small is-primary block">
+            <div class="hero-body">
+            <div class="container">
+                <div class="title is-4">
+                {"ASSelect - UK Airspace"}
+                </div>
+            </div>
+            </div>
+        </header>
+
+        <div class="container block">
+            <Tabs/>
             <AirspaceView on_change=|(a, b)| {logging::log!("{}, {}", a, b)}/>
 
             <RatView rat_names=rat_names(&yaixm) on_change=|x| {logging::log! ("{:?}", x)}/>
@@ -115,6 +164,7 @@ fn RatView(
         </div>
     }
 }
+*/
 
 // Get YAIXM data from server
 async fn fetch_yaixm() -> Option<Yaixm> {
