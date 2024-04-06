@@ -40,6 +40,8 @@ fn MainView(yaixm: Yaixm) -> impl IntoView {
         "About".to_string(),
     ];
 
+    let (settings, set_settings) = create_signal(settings::Settings::default());
+
     view! {
         <header class="hero is-small is-primary block">
             <div class="hero-body">
@@ -53,11 +55,22 @@ fn MainView(yaixm: Yaixm) -> impl IntoView {
 
         <div class="container block">
             <Tabs tab_names>
-                <AirspaceTab />
+                <AirspaceTab getter=settings setter=set_settings/>
                 <OptionTab />
                 <ExtraTab />
                 <NotamTab />
             </Tabs>
+        </div>
+
+        <div class="container block">
+            <div class="mx-4">
+            <button type="submit" class="button is-primary"
+                on:click = move |_| {
+                    logging::log!("{:?}", settings());
+                }>
+                {"Get Airspace"}
+            </button>
+            </div>
         </div>
     }
 }
@@ -66,19 +79,9 @@ fn MainView(yaixm: Yaixm) -> impl IntoView {
 #[component]
 fn MainView(yaixm: Yaixm) -> impl IntoView {
     view! {
-        <header class="hero is-small is-primary block">
-            <div class="hero-body">
-            <div class="container">
-                <div class="title is-4">
-                {"ASSelect - UK Airspace"}
-                </div>
-            </div>
-            </div>
-        </header>
 
         <div class="container block">
             <Tabs/>
-            <AirspaceView on_change=|(a, b)| {logging::log!("{}, {}", a, b)}/>
 
             <RatView rat_names=rat_names(&yaixm) on_change=|x| {logging::log! ("{:?}", x)}/>
 
@@ -97,31 +100,6 @@ fn MainView(yaixm: Yaixm) -> impl IntoView {
                     {"Get Airspace"}
                 </button>
                 </div>
-            </div>
-        </div>
-    }
-}
-
-#[component]
-fn AirspaceView(#[prop(into)] on_change: Callback<(String, String)>) -> impl IntoView {
-    view! {
-        <div class="columns">
-            <div class="column is-one-third">
-            <div class="field">
-                <label class="label">
-                {"ATZ"}
-                <div class="control">
-                    <div class="select is-fullwidth" on:change=move |ev| {
-                        on_change(("atz".to_string(), event_target_value(&ev)))
-            }>
-                    <select name="atz">
-                        <option value="classd">{"Class D"}</option>
-                        <option value= "ctr">{"Control Zone"}</option>
-                    </select>
-                    </div>
-                </div>
-                </label>
-            </div>
             </div>
         </div>
     }

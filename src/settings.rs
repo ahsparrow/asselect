@@ -1,3 +1,4 @@
+use leptos::html::P;
 // Copyright 2023, Alan Sparrow
 //
 // This program is free software: you can redistribute it and/or modify
@@ -15,9 +16,10 @@
 //
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
+use strum_macros::Display;
 
 // Airspace types
-#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Display, Eq, PartialEq, Serialize)]
 pub enum AirType {
     ClassA,
     ClassB,
@@ -98,6 +100,22 @@ impl Default for Settings {
         }
     }
 }
+
+impl Settings {
+    pub fn update(&mut self, name: &str, value: &str) {
+        match name {
+            "atz" => {
+                if value == "ClassD" {
+                    self.atz = AirType::ClassD;
+                } else {
+                    self.atz = AirType::Ctr;
+                }
+            }
+            _ => (),
+        }
+    }
+}
+
 /*
 impl Reducible for State {
     type Action = Action;
