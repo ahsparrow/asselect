@@ -1,1 +1,3 @@
-@use "bulma";
+@use "bulma" with (
+  $card-header-shadow: 0 0
+);
