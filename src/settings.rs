@@ -1,4 +1,3 @@
-use leptos::html::P;
 // Copyright 2023, Alan Sparrow
 //
 // This program is free software: you can redistribute it and/or modify
@@ -16,10 +15,11 @@ use leptos::html::P;
 //
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
-use strum_macros::Display;
+use std::str::FromStr;
+use strum_macros::{Display, EnumString};
 
 // Airspace types
-#[derive(Clone, Copy, Debug, Deserialize, Display, Eq, PartialEq, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Display, EnumString, Eq, PartialEq, Serialize)]
 pub enum AirType {
     ClassA,
     ClassB,
@@ -101,105 +101,49 @@ impl Default for Settings {
     }
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ExtraType {
+    Rat,
+    Loa,
+    Wave,
+}
+
 impl Settings {
     pub fn update(&mut self, name: &str, value: &str) {
         match name {
-            "atz" => {
-                if value == "ClassD" {
-                    self.atz = AirType::ClassD;
-                } else {
-                    self.atz = AirType::Ctr;
-                }
-            }
+            "atz" => self.atz = AirType::from_str(value).unwrap_or(AirType::Cta),
+            "ils" => self.ils = AirType::from_str(value).ok(),
             _ => (),
         }
     }
-}
 
-/*
-impl Reducible for State {
-    type Action = Action;
+    pub fn set_extra(&mut self, id: ExtraType, value: String, add: bool) {
+        let x = match id {
+            ExtraType::Rat => &mut self.rat,
+            ExtraType::Loa => &mut self.loa,
+            ExtraType::Wave => &mut self.wave,
+        };
 
-    fn reduce(self: Rc<Self>, action: Self::Action) -> Rc<Self> {
-        let mut set = self.settings.clone();
-        match action {
-            // Set airspace option
-            Action::Set { name, value } => {
-                match name.as_str() {
-                    "atz" => set.atz = get_airtype(&value).unwrap_or(AirType::Ctr),
-                    "ils" => set.ils = get_airtype(&value),
-                    "unlicensed" => set.unlicensed = get_airtype(&value),
-                    "microlight" => set.microlight = get_airtype(&value),
-                    "gliding" => set.gliding = get_airtype(&value),
-                    "hirta_gvs" => set.hirta_gvs = get_airtype(&value),
-                    "obstacle" => set.obstacle = get_airtype(&value),
-                    "max_level" => set.max_level = value.parse::<u16>().unwrap(),
-                    "radio" => set.radio = value == "yes",
-                    "home" => set.home = if value == "no" { None } else { Some(value) },
-                    "overlay" => {
-                        set.overlay = match value.as_str() {
-                            "fl195" => Some(Overlay::FL195),
-                            "fl105" => Some(Overlay::FL105),
-                            "atzdz" => Some(Overlay::AtzDz),
-                            _ => None,
-                        }
-                    }
-                    "format" => {
-                        set.format = match value.as_str() {
-                            "ratonly" => Format::RatOnly,
-                            "competition" => Format::Competition,
-                            _ => Format::OpenAir,
-                        }
-                    }
-                    _ => (),
-                };
-            }
-            // Include/exclude LOA
-            Action::SetLoa { name, checked } => {
-                if checked {
-                    set.loa.replace(name);
-                } else {
-                    set.loa.remove(&name);
-                }
-            }
-            // Include/exclude RAT
-            Action::SetRat { name, checked } => {
-                if checked {
-                    set.rat.replace(name);
-                } else {
-                    set.rat.remove(&name);
-                }
-            }
-            // Include/exclude wave box
-            Action::SetWave { name, checked } => {
-                if checked {
-                    set.wave.replace(name);
-                } else {
-                    set.wave.remove(&name);
-                }
-            }
-            // Clear all LOAs
-            Action::ClearLoa => set.loa.clear(),
-            // Clear all RATs
-            Action::ClearRat => set.rat.clear(),
-            // Clear all Wave boxes
-            Action::ClearWave => set.wave.clear(),
+        if add {
+            x.insert(value);
+        } else {
+            x.remove(&value);
         }
-        Self { settings: set }.into()
     }
-}
 
-// Default mapping value to airspace type
-fn get_airtype(value: &str) -> Option<AirType> {
-    match value {
-        "classd" => Some(AirType::ClassD),
-        "classf" => Some(AirType::ClassF),
-        "classg" => Some(AirType::ClassG),
-        "ctr" => Some(AirType::Ctr),
-        "danger" => Some(AirType::Danger),
-        "restricted" => Some(AirType::Restricted),
-        "gsec" => Some(AirType::Gliding),
-        _ => None,
+    pub fn get_extra(&self, id: ExtraType) -> &HashSet<String> {
+        match id {
+            ExtraType::Rat => &self.rat,
+            ExtraType::Loa => &self.loa,
+            ExtraType::Wave => &self.wave,
+        }
+    }
+
+    pub fn clear_extra(&mut self, id: ExtraType) {
+        match id {
+            ExtraType::Rat => &self.rat.clear(),
+            ExtraType::Loa => &self.loa.clear(),
+            ExtraType::Wave => &self.wave.clear(),
+        };
     }
 }
-*/

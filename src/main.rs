@@ -1,13 +1,13 @@
 use gloo::file::{Blob, ObjectUrl};
 use gloo::net::http::Request;
 use leptos::*;
-use std::collections::HashSet;
 
 use components::{
-    airspace_tab::AirspaceTab, extra_tab::ExtraTab, notam_tab::NotamTab, option_tab::OptionTab,
-    tabs::Tabs,
+    airspace_tab::AirspaceTab, extra_panel::ExtraPanel, extra_tab::ExtraTab, notam_tab::NotamTab,
+    option_tab::OptionTab, tabs::Tabs,
 };
-use yaixm::{rat_names, Yaixm};
+use settings::ExtraType;
+use yaixm::{loa_names, rat_names, wave_names, Yaixm};
 
 mod components;
 mod settings;
@@ -40,7 +40,17 @@ fn MainView(yaixm: Yaixm) -> impl IntoView {
         "About".to_string(),
     ];
 
+    let extra_names = vec![
+        "Temporary Restrictions".to_string(),
+        "Local Agreements".to_string(),
+        "Wave Boxes".to_string(),
+    ];
+
+    let extra_ids = vec![ExtraType::Rat, ExtraType::Loa, ExtraType::Wave];
+
     let (settings, set_settings) = create_signal(settings::Settings::default());
+    provide_context(settings);
+    provide_context(set_settings);
 
     view! {
         <header class="hero is-small is-primary block">
@@ -55,9 +65,13 @@ fn MainView(yaixm: Yaixm) -> impl IntoView {
 
         <div class="container block">
             <Tabs tab_names>
-                <AirspaceTab getter=settings setter=set_settings/>
+                <AirspaceTab />
                 <OptionTab />
-                <ExtraTab />
+                <ExtraTab names=extra_names ids=extra_ids>
+                    <ExtraPanel names=rat_names(&yaixm) id=ExtraType::Rat />
+                    <ExtraPanel names=loa_names(&yaixm) id=ExtraType::Loa />
+                    <ExtraPanel names=wave_names(&yaixm) id=ExtraType::Wave />
+                </ExtraTab>
                 <NotamTab />
             </Tabs>
         </div>
@@ -67,6 +81,14 @@ fn MainView(yaixm: Yaixm) -> impl IntoView {
             <button type="submit" class="button is-primary"
                 on:click = move |_| {
                     logging::log!("{:?}", settings());
+
+                    let blob = Blob::new("Hello Alan");
+                    let object_url = ObjectUrl::from(blob);
+
+                    let a = leptos::html::a();
+                    a.set_download("openair.txt");
+                    a.set_href(&object_url);
+                    a.click();
                 }>
                 {"Get Airspace"}
             </button>
@@ -74,75 +96,6 @@ fn MainView(yaixm: Yaixm) -> impl IntoView {
         </div>
     }
 }
-
-/*
-#[component]
-fn MainView(yaixm: Yaixm) -> impl IntoView {
-    view! {
-
-        <div class="container block">
-            <Tabs/>
-
-            <RatView rat_names=rat_names(&yaixm) on_change=|x| {logging::log! ("{:?}", x)}/>
-
-            <div class="container block">
-                <div class="mx-4">
-                <button type="submit" class="button is-primary"
-                    on:click = |_| {
-                        let blob = Blob::new("Hello Alan");
-                        let object_url = ObjectUrl::from(blob);
-
-                        let a = leptos::html::a();
-                        a.set_download("openair.txt");
-                        a.set_href(&object_url);
-                        a.click();
-                    }>
-                    {"Get Airspace"}
-                </button>
-                </div>
-            </div>
-        </div>
-    }
-}
-
-#[component]
-fn RatView(
-    rat_names: Vec<String>,
-    #[prop(into)] on_change: Callback<HashSet<String>>,
-) -> impl IntoView {
-    let (get, set) = create_signal(HashSet::<String>::new());
-    view! {
-        <div>
-            <ul>
-                { rat_names.into_iter()
-                    .map(|n| {
-                        let nx = n.clone();
-                        let nz = n.clone();
-                        let checked = move || get().contains(&nz);
-                        view! {
-                            <div class="field">
-                            <label class="checkbox">
-                            <input name={&n} type="checkbox" class="mr-2" prop:checked={checked} on:change = move |ev| {
-                                if event_target_checked(&ev) {
-                                    set.update(|s| { s.insert(nx.clone()); });
-                                } else {
-                                    set.update(|s| { s.remove(&nx); });
-                                }
-                                on_change(get())
-                            }/>
-                            {&n}
-                            </label>
-                            </div>
-                        }
-                    })
-                    .collect_view()
-                }
-            </ul>
-            <button on:click = move |_| { set.update(|s|  s.clear()); on_change(get()) }>Clear</button>
-        </div>
-    }
-}
-*/
 
 // Get YAIXM data from server
 async fn fetch_yaixm() -> Option<Yaixm> {
