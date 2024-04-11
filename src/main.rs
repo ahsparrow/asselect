@@ -7,7 +7,7 @@ use components::{
     option_tab::OptionTab, tabs::Tabs,
 };
 use settings::ExtraType;
-use yaixm::{loa_names, rat_names, wave_names, Yaixm};
+use yaixm::{gliding_sites, loa_names, rat_names, wave_names, Yaixm};
 
 mod components;
 mod settings;
@@ -52,6 +52,9 @@ fn MainView(yaixm: Yaixm) -> impl IntoView {
     provide_context(settings);
     provide_context(set_settings);
 
+    let mut gliding_sites = gliding_sites(&yaixm);
+    gliding_sites.sort();
+
     view! {
         <header class="hero is-small is-primary block">
             <div class="hero-body">
@@ -65,7 +68,7 @@ fn MainView(yaixm: Yaixm) -> impl IntoView {
 
         <div class="container block">
             <Tabs tab_names>
-                <AirspaceTab />
+                <AirspaceTab gliding_sites=gliding_sites />
                 <OptionTab />
                 <ExtraTab names=extra_names ids=extra_ids>
                     <ExtraPanel names=rat_names(&yaixm) id=ExtraType::Rat />

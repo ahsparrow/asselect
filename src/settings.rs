@@ -113,6 +113,16 @@ impl Settings {
         match name {
             "atz" => self.atz = AirType::from_str(value).unwrap_or(AirType::Cta),
             "ils" => self.ils = AirType::from_str(value).ok(),
+            "unlicensed" => self.unlicensed = AirType::from_str(value).ok(),
+            "microlight" => self.microlight = AirType::from_str(value).ok(),
+            "gliding" => self.gliding = AirType::from_str(value).ok(),
+            "home" => {
+                self.home = if value == "no" {
+                    None
+                } else {
+                    Some(value.to_string())
+                }
+            }
             _ => (),
         }
     }
