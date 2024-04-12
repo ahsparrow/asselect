@@ -212,10 +212,17 @@ pub fn AirspaceTab(gliding_sites: Vec<String>) -> impl IntoView {
                                                 .update(|s| s.update("home", &event_target_value(&ev)))
                                         }
                                     >
-                                        <option value="no">"No"</option>
+                                        <option value="no" selected=move || getter().home.is_none()>"No"</option>
                                         {gliding_sites
                                             .into_iter()
-                                            .map(|n| view! { <option>{n}</option> })
+                                            .map(|n|  {
+                                                let nc = n.clone();
+                                                view! {
+                                                    <option selected=move || Some(&n) == getter().home.as_ref()>
+                                                        {nc}
+                                                    </option>
+                                                }
+                                            })
                                             .collect_view()}
                                     </select>
                                 </div>
