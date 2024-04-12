@@ -1,12 +1,14 @@
 use gloo::file::{Blob, ObjectUrl};
 use gloo::net::http::Request;
 use leptos::*;
+use leptos_use::storage::use_local_storage;
+use leptos_use::utils::JsonCodec;
 
 use components::{
     airspace_tab::AirspaceTab, extra_panel::ExtraPanel, extra_tab::ExtraTab, notam_tab::NotamTab,
     option_tab::OptionTab, tabs::Tabs,
 };
-use settings::ExtraType;
+use settings::{ExtraType, Settings};
 use yaixm::{gliding_sites, loa_names, rat_names, wave_names, Yaixm};
 
 mod components;
@@ -32,6 +34,13 @@ fn App() -> impl IntoView {
 
 #[component]
 fn MainView(yaixm: Yaixm) -> impl IntoView {
+    let (local_settings, set_local_settings, _) =
+        use_local_storage::<Settings, JsonCodec>("settings");
+
+    let (settings, set_settings) = create_signal(local_settings.get_untracked());
+    provide_context(settings);
+    provide_context(set_settings);
+
     let tab_names = vec![
         "Main".to_string(),
         "Option".to_string(),
@@ -47,10 +56,6 @@ fn MainView(yaixm: Yaixm) -> impl IntoView {
     ];
 
     let extra_ids = vec![ExtraType::Rat, ExtraType::Loa, ExtraType::Wave];
-
-    let (settings, set_settings) = create_signal(settings::Settings::default());
-    provide_context(settings);
-    provide_context(set_settings);
 
     let mut gliding_sites = gliding_sites(&yaixm);
     gliding_sites.sort();
@@ -83,7 +88,7 @@ fn MainView(yaixm: Yaixm) -> impl IntoView {
             <div class="mx-4">
             <button type="submit" class="button is-primary"
                 on:click = move |_| {
-                    logging::log!("{:?}", settings());
+                    set_local_settings.set(settings.get_untracked());
 
                     let blob = Blob::new("Hello Alan");
                     let object_url = ObjectUrl::from(blob);
