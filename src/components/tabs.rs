@@ -10,12 +10,15 @@ pub fn Tabs(tab_names: Vec<String>, children: Children) -> impl IntoView {
                 {tab_names
                     .into_iter()
                     .enumerate()
-                    .map(|(index, tab_name)| view! {
-                        <li class:is-active=move || selected()==index>
-                            <a on:click=move |_| set_selected(index)>{tab_name}</a>
-                        </li>})
-                    .collect_view()
-                }
+                    .map(|(index, tab_name)| {
+                        view! {
+                            <li class:is-active=move || selected() == index>
+                                <a on:click=move |_| set_selected(index)>{tab_name}</a>
+                            </li>
+                        }
+                    })
+                    .collect_view()}
+
             </ul>
         </nav>
 
@@ -23,12 +26,7 @@ pub fn Tabs(tab_names: Vec<String>, children: Children) -> impl IntoView {
             .nodes
             .into_iter()
             .enumerate()
-            .map(|(index, child)| view! {
-                <div hidden={move || index != selected()}>
-                    {child}
-                </div>
-            })
-            .collect_view()
-        }
+            .map(|(index, child)| view! { <div hidden=move || index != selected()>{child}</div> })
+            .collect_view()}
     }
 }

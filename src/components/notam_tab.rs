@@ -2,7 +2,5 @@ use leptos::*;
 
 #[component]
 pub fn NotamTab() -> impl IntoView {
-    view! {
-        <p>"Notam"</p>
-    }
+    view! { <p>"Notam"</p> }
 }

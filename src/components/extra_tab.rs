@@ -17,17 +17,20 @@ pub fn ExtraTab(children: Children, names: Vec<String>, ids: Vec<ExtraType>) -> 
             view! {
                 <div class="card block">
                     <header class="card-header is-clickable" on:click=move |_| set(n)>
-                        <p class="card-header-title">{ name }</p>
-                        <div hidden=move || get()!=n>
+                        <p class="card-header-title">{name}</p>
+                        <div hidden=move || get() != n>
                             <div class="card-header-icon">
-                                <input class="button is-info is-light is-small ml-2"
-                                    type="button" value="Clear"
-                                    on:click=move |_| setter.update(|s| s.clear_extra(id)) />
+                                <input
+                                    class="button is-info is-light is-small ml-2"
+                                    type="button"
+                                    value="Clear"
+                                    on:click=move |_| setter.update(|s| s.clear_extra(id))
+                                />
                             </div>
                         </div>
                     </header>
 
-                    <div class="card-content" hidden=move || get()!=n>
+                    <div class="card-content" hidden=move || get() != n>
                         {child}
                     </div>
                 </div>
