@@ -41,7 +41,7 @@ pub enum AirType {
 }
 
 // Output format
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Display, EnumString, Eq, PartialEq, Serialize)]
 pub enum Format {
     OpenAir,
     RatOnly,
@@ -49,7 +49,7 @@ pub enum Format {
 }
 
 // Altutude layer overlay
-#[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Display, EnumString, Eq, PartialEq, Serialize)]
 pub enum Overlay {
     FL195,
     FL105,
@@ -116,6 +116,12 @@ impl Settings {
             "unlicensed" => self.unlicensed = AirType::from_str(value).ok(),
             "microlight" => self.microlight = AirType::from_str(value).ok(),
             "gliding" => self.gliding = AirType::from_str(value).ok(),
+            "hirta_gvs" => self.hirta_gvs = AirType::from_str(value).ok(),
+            "obstacle" => self.obstacle = AirType::from_str(value).ok(),
+            "format" => self.format = Format::from_str(value).unwrap_or(Format::OpenAir),
+            "max_level" => self.max_level = value.parse().unwrap_or(660),
+            "radio" => self.radio = value == "yes",
+            "overlay" => self.overlay = Overlay::from_str(value).ok(),
             "home" => {
                 self.home = if value == "no" {
                     None
