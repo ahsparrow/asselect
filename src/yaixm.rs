@@ -109,7 +109,7 @@ pub struct Circle {
 pub struct Arc {
     pub centre: String,
     pub dir: String,
-    pub radius: String,
+    pub _radius: String,
     pub to: String,
 }
 
@@ -159,7 +159,7 @@ pub struct Replace {
 
 #[derive(Clone, Deserialize, Debug)]
 pub struct LoaArea {
-    pub name: String,
+    pub _name: String,
     pub add: Vec<Feature>,
     pub replace: Option<Vec<Replace>>,
 }
@@ -180,7 +180,7 @@ pub struct Obstacle {
 
 #[derive(Clone, Deserialize, Debug)]
 pub struct Service {
-    pub callsign: String,
+    pub _callsign: String,
     pub frequency: f64,
     pub controls: Vec<String>,
 }
@@ -188,8 +188,8 @@ pub struct Service {
 #[derive(Clone, Deserialize, Debug)]
 pub struct Release {
     pub airac_date: String,
-    pub timestamp: String,
-    pub schema_version: u8,
+    pub _timestamp: String,
+    pub _schema_version: u8,
     pub note: String,
     pub commit: String,
 }
