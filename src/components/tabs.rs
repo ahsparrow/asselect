@@ -22,11 +22,13 @@ pub fn Tabs(tab_names: Vec<String>, children: Children) -> impl IntoView {
             </ul>
         </nav>
 
-        {children()
-            .nodes
-            .into_iter()
-            .enumerate()
-            .map(|(index, child)| view! { <div hidden=move || index != selected()>{child}</div> })
-            .collect_view()}
+        <div class="mx-4">
+            {children()
+                .nodes
+                .into_iter()
+                .enumerate()
+                .map(|(index, child)| view! { <div hidden=move || index != selected()>{child}</div> })
+                .collect_view()}
+        </div>
     }
 }

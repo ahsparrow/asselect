@@ -1,3 +1,27 @@
-@use "bulma" with (
+$blue: #2fa4e7;
+
+@forward "bulma/utilities" with (
+  $family-primary: "Roboto, sans-serif",
+  $primary: $blue
+);
+
+@use "bulma/components/card" with (
   $card-header-shadow: 0 0
 );
+
+@forward "bulma/base";
+@forward "bulma/components/tabs";
+@forward "bulma/elements/box";
+@forward "bulma/elements/block";
+@forward "bulma/elements/button";
+@forward "bulma/elements/content";
+@forward "bulma/elements/title";
+@forward "bulma/form";
+@forward "bulma/grid/columns";
+@forward "bulma/helpers";
+@forward "bulma/layout/container";
+@forward "bulma/layout/hero";
+
+@forward "bulma/themes";
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
