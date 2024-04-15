@@ -1,3 +1,4 @@
+use futures::join;
 use gloo::file::{Blob, ObjectUrl};
 use gloo::net::http::Request;
 use leptos::*;
@@ -8,22 +9,46 @@ use components::{
     airspace_tab::AirspaceTab, extra_panel::ExtraPanel, extra_tab::ExtraTab, notam_tab::NotamTab,
     option_tab::OptionTab, tabs::Tabs,
 };
-use settings::{ExtraType, Settings};
+use convert::openair;
+use settings::{ExtraType, Overlay, Settings};
 use yaixm::{gliding_sites, loa_names, rat_names, wave_names, Yaixm};
 
 mod components;
+mod convert;
 mod settings;
 mod yaixm;
 
+#[derive(Clone, Debug)]
+struct OverlayData {
+    overlay_195: Option<String>,
+    overlay_105: Option<String>,
+    overlay_atzdz: Option<String>,
+}
+
 #[component]
 fn App() -> impl IntoView {
-    let async_data = create_local_resource(|| (), |_| async move { fetch_yaixm().await });
+    let async_yaixm = create_local_resource(|| (), |_| async move { fetch_yaixm().await });
+
+    let async_overlay = create_local_resource(
+        || (),
+        |_| async move {
+            let overlay_195 = fetch_overlay("overlay_195.txt");
+            let overlay_105 = fetch_overlay("overlay_105.txt");
+            let overlay_atzdz = fetch_overlay("overlay_atzdz.txt");
+            let (o_195, o_105, o_atzdz) = join!(overlay_195, overlay_105, overlay_atzdz);
+            OverlayData {
+                overlay_195: o_195,
+                overlay_105: o_105,
+                overlay_atzdz: o_atzdz,
+            }
+        },
+    );
 
     view! {
-        {move || match async_data.get() {
+        {move || match async_yaixm.get() {
             Some(resource) => {
                 match resource {
-                    Some(yaixm) => view! { <MainView yaixm=yaixm/> }.into_view(),
+                    Some(yaixm) => view! { <MainView yaixm=yaixm overlay=async_overlay/> }.into_view(),
                     None => view! { <p>"Error loading YAXIM"</p> }.into_view(),
                 }
             }
@@ -33,13 +58,17 @@ fn App() -> impl IntoView {
 }
 
 #[component]
-fn MainView(yaixm: Yaixm) -> impl IntoView {
+fn MainView(yaixm: Yaixm, overlay: Resource<(), OverlayData>) -> impl IntoView {
     let (local_settings, set_local_settings, _) =
         use_local_storage::<Settings, JsonCodec>("settings");
 
     let (settings, set_settings) = create_signal(local_settings.get_untracked());
     provide_context(settings);
     provide_context(set_settings);
+
+    let rat_names = rat_names(&yaixm);
+    let loa_names = loa_names(&yaixm);
+    let wave_names = wave_names(&yaixm);
 
     let tab_names = vec![
         "Main".to_string(),
@@ -74,9 +103,9 @@ fn MainView(yaixm: Yaixm) -> impl IntoView {
                 <AirspaceTab gliding_sites=gliding_sites/>
                 <OptionTab/>
                 <ExtraTab names=extra_names ids=extra_ids>
-                    <ExtraPanel names=rat_names(&yaixm) id=ExtraType::Rat/>
-                    <ExtraPanel names=loa_names(&yaixm) id=ExtraType::Loa/>
-                    <ExtraPanel names=wave_names(&yaixm) id=ExtraType::Wave/>
+                    <ExtraPanel names=rat_names id=ExtraType::Rat/>
+                    <ExtraPanel names=loa_names id=ExtraType::Loa/>
+                    <ExtraPanel names=wave_names id=ExtraType::Wave/>
                 </ExtraTab>
                 <NotamTab/>
             </Tabs>
@@ -89,8 +118,35 @@ fn MainView(yaixm: Yaixm) -> impl IntoView {
                     class="button is-primary"
                     on:click=move |_| {
                         set_local_settings.set(settings.get_untracked());
-                        let blob = Blob::new("Hello Alan");
+
+                        let user_agent = web_sys::window()
+                            .and_then(|w| w.navigator().user_agent().ok())
+                            .unwrap_or_default();
+
+                        // Create OpenAir data
+                        let oa = openair(&yaixm, &settings.get_untracked(), &user_agent);
+
+                        // Get overlay data
+                        let od = if let Some(overlay_setting) = settings().overlay {
+                            if let Some(overlay_data) = overlay.get() {
+                                let x = match overlay_setting {
+                                    Overlay::FL195 => overlay_data.overlay_195,
+                                    Overlay::FL105 => overlay_data.overlay_105,
+                                    Overlay::AtzDz => overlay_data.overlay_atzdz,
+                                };
+                                x.unwrap_or("* Missing overlay data".to_string())
+                            } else {
+                                "* Overlay data not loaded".to_string()
+                            }
+                        } else {
+                            "".to_string()
+                        };
+
+                        // Create download data
+                        let blob = Blob::new((oa + od.as_str()).as_str());
                         let object_url = ObjectUrl::from(blob);
+
+                        // Trigger a "fake" download
                         let a = leptos::html::a();
                         a.set_download("openair.txt");
                         a.set_href(&object_url);
@@ -109,6 +165,15 @@ async fn fetch_yaixm() -> Option<Yaixm> {
     let result = Request::get("yaixm.json").send().await;
     match result {
         Ok(response) => response.json().await.ok(),
+        _ => None,
+    }
+}
+
+// Get overlay data from server
+async fn fetch_overlay(path: &str) -> Option<String> {
+    let result = Request::get(path).send().await;
+    match result {
+        Ok(response) => response.text().await.ok(),
         _ => None,
     }
 }
