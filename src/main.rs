@@ -66,9 +66,14 @@ fn MainView(yaixm: Yaixm, overlay: Resource<(), OverlayData>) -> impl IntoView {
     provide_context(settings);
     provide_context(set_settings);
 
+    let (modal, set_modal) = create_signal(false);
+
     let rat_names = rat_names(&yaixm);
     let loa_names = loa_names(&yaixm);
     let wave_names = wave_names(&yaixm);
+
+    let airac_date = yaixm.release.airac_date[..10].to_string();
+    let release_note = yaixm.release.note.clone();
 
     let tab_names = vec![
         "Main".to_string(),
@@ -88,6 +93,43 @@ fn MainView(yaixm: Yaixm, overlay: Resource<(), OverlayData>) -> impl IntoView {
 
     let mut gliding_sites = gliding_sites(&yaixm);
     gliding_sites.sort();
+
+    let download = move |_| {
+        set_local_settings.set(settings.get_untracked());
+
+        let user_agent = web_sys::window()
+            .and_then(|w| w.navigator().user_agent().ok())
+            .unwrap_or_default();
+
+        // Create OpenAir data
+        let oa = openair(&yaixm, &settings.get_untracked(), &user_agent);
+
+        // Get overlay data
+        let od = if let Some(overlay_setting) = settings().overlay {
+            if let Some(overlay_data) = overlay.get() {
+                let x = match overlay_setting {
+                    Overlay::FL195 => overlay_data.overlay_195,
+                    Overlay::FL105 => overlay_data.overlay_105,
+                    Overlay::AtzDz => overlay_data.overlay_atzdz,
+                };
+                x.unwrap_or("* Missing overlay data".to_string())
+            } else {
+                "* Overlay data not loaded".to_string()
+            }
+        } else {
+            "".to_string()
+        };
+
+        // Create download data
+        let blob = Blob::new((oa + od.as_str()).as_str());
+        let object_url = ObjectUrl::from(blob);
+
+        // Trigger a "fake" download
+        let a = leptos::html::a();
+        a.set_download("openair.txt");
+        a.set_href(&object_url);
+        a.click();
+    };
 
     view! {
         <header class="hero is-small is-primary block">
@@ -113,49 +155,25 @@ fn MainView(yaixm: Yaixm, overlay: Resource<(), OverlayData>) -> impl IntoView {
 
         <div class="container block">
             <div class="mx-4">
-                <button
-                    type="submit"
-                    class="button is-primary"
-                    on:click=move |_| {
-                        set_local_settings.set(settings.get_untracked());
-
-                        let user_agent = web_sys::window()
-                            .and_then(|w| w.navigator().user_agent().ok())
-                            .unwrap_or_default();
-
-                        // Create OpenAir data
-                        let oa = openair(&yaixm, &settings.get_untracked(), &user_agent);
-
-                        // Get overlay data
-                        let od = if let Some(overlay_setting) = settings().overlay {
-                            if let Some(overlay_data) = overlay.get() {
-                                let x = match overlay_setting {
-                                    Overlay::FL195 => overlay_data.overlay_195,
-                                    Overlay::FL105 => overlay_data.overlay_105,
-                                    Overlay::AtzDz => overlay_data.overlay_atzdz,
-                                };
-                                x.unwrap_or("* Missing overlay data".to_string())
-                            } else {
-                                "* Overlay data not loaded".to_string()
-                            }
-                        } else {
-                            "".to_string()
-                        };
-
-                        // Create download data
-                        let blob = Blob::new((oa + od.as_str()).as_str());
-                        let object_url = ObjectUrl::from(blob);
-
-                        // Trigger a "fake" download
-                        let a = leptos::html::a();
-                        a.set_download("openair.txt");
-                        a.set_href(&object_url);
-                        a.click();
-                    }
-                >
+                <button type="submit" class="button is-primary" on:click=download>
                     {"Get Airspace"}
                 </button>
+
+                <a id="airac-button" class="button is-text is-pulled-right" on:click=move |_| set_modal(true)>
+                    "AIRAC: "{ airac_date }
+                </a>
             </div>
+        </div>
+
+        <div class="modal" class:is-active=move || modal()>
+            <div class="modal-background"></div>
+                <div class="modal-content">
+                    <div class="box">
+                        <h2 class="subtitle">{"Release Details"}</h2>
+                        <pre>{ release_note }</pre>
+                    </div>
+                </div>
+            <button class="modal-close is-large" on:click=move |_| set_modal(false)></button>
         </div>
     }
 }

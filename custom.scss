@@ -10,6 +10,7 @@ $blue: #2fa4e7;
 );
 
 @forward "bulma/base";
+@forward "bulma/components/modal";
 @forward "bulma/components/tabs";
 @forward "bulma/elements/box";
 @forward "bulma/elements/block";
