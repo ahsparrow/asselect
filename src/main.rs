@@ -69,8 +69,10 @@ fn MainView(yaixm: Yaixm, overlay: Resource<(), OverlayData>) -> impl IntoView {
     let (modal, set_modal) = create_signal(false);
 
     let rat_names = rat_names(&yaixm);
-    let loa_names = loa_names(&yaixm);
-    let wave_names = wave_names(&yaixm);
+    let mut loa_names = loa_names(&yaixm);
+    loa_names.sort();
+    let mut wave_names = wave_names(&yaixm);
+    wave_names.sort();
 
     let airac_date = yaixm.release.airac_date[..10].to_string();
     let release_note = yaixm.release.note.clone();
