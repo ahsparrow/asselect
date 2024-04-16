@@ -6,8 +6,8 @@ use leptos_use::storage::use_local_storage;
 use leptos_use::utils::JsonCodec;
 
 use components::{
-    airspace_tab::AirspaceTab, extra_panel::ExtraPanel, extra_tab::ExtraTab, notam_tab::NotamTab,
-    option_tab::OptionTab, tabs::Tabs,
+    about_tab::AboutTab, airspace_tab::AirspaceTab, extra_panel::ExtraPanel, extra_tab::ExtraTab,
+    notam_tab::NotamTab, option_tab::OptionTab, tabs::Tabs,
 };
 use convert::openair;
 use settings::{ExtraType, Overlay, Settings};
@@ -152,6 +152,7 @@ fn MainView(yaixm: Yaixm, overlay: Resource<(), OverlayData>) -> impl IntoView {
                     <ExtraPanel names=wave_names id=ExtraType::Wave/>
                 </ExtraTab>
                 <NotamTab/>
+                <AboutTab/>
             </Tabs>
         </div>
 
