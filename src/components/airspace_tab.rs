@@ -157,7 +157,8 @@ pub fn AirspaceTab(gliding_sites: Vec<String>) -> impl IntoView {
                 <div class="column is-one-third">
                     <div class="field">
                         <label class="label">
-                            "Gliding Airfield" <div class="control">
+                            "Gliding Airfield"
+                            <div class="control">
                                 <div class="select is-fullwidth">
                                     <select on:change=move |ev| {
                                         setter
@@ -172,7 +173,7 @@ pub fn AirspaceTab(gliding_sites: Vec<String>) -> impl IntoView {
                                         <option
                                             value=AirType::Gliding.to_string()
                                             selected=move || {
-                                                getter().unlicensed == Some(AirType::Gliding)
+                                                getter().gliding == Some(AirType::Gliding)
                                             }
                                         >
                                             "Gliding Sector"
@@ -180,7 +181,7 @@ pub fn AirspaceTab(gliding_sites: Vec<String>) -> impl IntoView {
                                         <option
                                             value=AirType::ClassF.to_string()
                                             selected=move || {
-                                                getter().unlicensed == Some(AirType::ClassF)
+                                                getter().gliding == Some(AirType::ClassF)
                                             }
                                         >
                                             "Class F"
@@ -188,7 +189,7 @@ pub fn AirspaceTab(gliding_sites: Vec<String>) -> impl IntoView {
                                         <option
                                             value=AirType::ClassG.to_string()
                                             selected=move || {
-                                                getter().unlicensed == Some(AirType::ClassG)
+                                                getter().gliding == Some(AirType::ClassG)
                                             }
                                         >
                                             "Class G"
