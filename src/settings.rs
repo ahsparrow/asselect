@@ -19,7 +19,7 @@ use std::str::FromStr;
 use strum_macros::{Display, EnumString};
 
 // Airspace types
-#[derive(Clone, Copy, Debug, Deserialize, Display, EnumString, Eq, PartialEq, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Display, EnumString, PartialEq, Serialize)]
 pub enum AirType {
     ClassA,
     ClassB,
@@ -41,7 +41,7 @@ pub enum AirType {
 }
 
 // Output format
-#[derive(Clone, Debug, Deserialize, Display, EnumString, Eq, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Display, EnumString, PartialEq, Serialize)]
 pub enum Format {
     OpenAir,
     RatOnly,
@@ -49,7 +49,7 @@ pub enum Format {
 }
 
 // Altutude layer overlay
-#[derive(Clone, Copy, Debug, Deserialize, Display, EnumString, Eq, PartialEq, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Display, EnumString, PartialEq, Serialize)]
 pub enum Overlay {
     FL195,
     FL105,
@@ -57,7 +57,7 @@ pub enum Overlay {
 }
 
 // Settings
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Settings {
     pub atz: AirType,
     pub ils: Option<AirType>,
@@ -101,7 +101,7 @@ impl Default for Settings {
     }
 }
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ExtraType {
     Rat,
     Loa,
