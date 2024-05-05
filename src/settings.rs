@@ -49,7 +49,7 @@ pub enum Format {
 }
 
 // Altutude layer overlay
-#[derive(Clone, Copy, Debug, Deserialize, Display, EnumString, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Display, EnumString, PartialEq, Serialize)]
 pub enum Overlay {
     FL195,
     FL105,

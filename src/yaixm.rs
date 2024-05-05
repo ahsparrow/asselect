@@ -26,7 +26,7 @@ pub enum IcaoClass {
     G,
 }
 
-#[derive(Clone, Copy, Deserialize, PartialEq, Debug)]
+#[derive(Clone, Deserialize, PartialEq, Debug)]
 pub enum IcaoType {
     #[serde(rename = "ATZ")]
     Atz,
@@ -77,7 +77,7 @@ pub enum LocalType {
     Tmz,
 }
 
-#[derive(Clone, Copy, Deserialize, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Deserialize, Debug, Eq, Hash, PartialEq)]
 pub enum Rule {
     #[serde(rename = "INTENSE")]
     Intense,
