@@ -15,7 +15,7 @@
 //
 use serde::Deserialize;
 
-#[derive(Clone, Copy, Deserialize, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Deserialize, Debug, PartialEq)]
 pub enum IcaoClass {
     A,
     B,
@@ -26,7 +26,7 @@ pub enum IcaoClass {
     G,
 }
 
-#[derive(Clone, Copy, Deserialize, Eq, PartialEq, Debug)]
+#[derive(Clone, Copy, Deserialize, PartialEq, Debug)]
 pub enum IcaoType {
     #[serde(rename = "ATZ")]
     Atz,
@@ -47,7 +47,7 @@ pub enum IcaoType {
     Tma,
 }
 
-#[derive(Clone, Copy, Deserialize, Eq, PartialEq, Debug)]
+#[derive(Clone, Copy, Deserialize, PartialEq, Debug)]
 pub enum LocalType {
     #[serde(rename = "DZ")]
     Dz,
