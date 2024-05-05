@@ -49,10 +49,10 @@ fn App() -> impl IntoView {
             Some(resource) => {
                 match resource {
                     Some(yaixm) => view! { <MainView yaixm=yaixm overlay=async_overlay/> }.into_view(),
-                    None => view! { <p>"Error loading YAXIM"</p> }.into_view(),
+                    None => view! { <p>"Error getting airspace data"</p> }.into_view(),
                 }
             }
-            None => view! { <p>"Loading YAIXM, please wait..."</p> }.into_view(),
+            None => view! { <p>"Getting airspace data, please wait..."</p> }.into_view(),
         }}
     }
 }
