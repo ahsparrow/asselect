@@ -168,7 +168,7 @@ fn MainView(yaixm: Yaixm, overlay: Resource<(), OverlayData>) -> impl IntoView {
             </div>
         </div>
 
-        <div class="modal" class:is-active=move || modal()>
+        <div class="modal" class:is-active=modal>
             <div class="modal-background"></div>
                 <div class="modal-content">
                     <div class="box">
