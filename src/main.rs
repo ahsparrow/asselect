@@ -1,3 +1,18 @@
+// Copyright 2024, Alan Sparrow
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or (at
+// your option) any later version.
+//
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <https://www.gnu.org/licenses/>.
+//
 use futures::join;
 use gloo::file::{Blob, ObjectUrl};
 use gloo::net::http::Request;
@@ -59,24 +74,32 @@ fn App() -> impl IntoView {
 
 #[component]
 fn MainView(yaixm: Yaixm, overlay: Resource<(), OverlayData>) -> impl IntoView {
+    // Local settings storage
     let (local_settings, set_local_settings, _) =
         use_local_storage::<Settings, JsonCodec>("settings");
 
+    // Make copy of settings so store value is only updated on download
     let (settings, set_settings) = create_signal(local_settings.get_untracked());
     provide_context(settings);
     provide_context(set_settings);
 
+    // Release note modal display control
     let (modal, set_modal) = create_signal(false);
 
+    // UI data from YAIXM
     let rat_names = rat_names(&yaixm);
     let mut loa_names = loa_names(&yaixm);
-    loa_names.sort();
     let mut wave_names = wave_names(&yaixm);
+    loa_names.sort();
     wave_names.sort();
+
+    let mut gliding_sites = gliding_sites(&yaixm);
+    gliding_sites.sort();
 
     let airac_date = yaixm.release.airac_date[..10].to_string();
     let release_note = yaixm.release.note.clone();
 
+    // UI static data
     let tab_names = vec![
         "Main".to_string(),
         "Option".to_string(),
@@ -93,10 +116,9 @@ fn MainView(yaixm: Yaixm, overlay: Resource<(), OverlayData>) -> impl IntoView {
 
     let extra_ids = vec![ExtraType::Rat, ExtraType::Loa, ExtraType::Wave];
 
-    let mut gliding_sites = gliding_sites(&yaixm);
-    gliding_sites.sort();
-
+    // Download button callback
     let download = move |_| {
+        // Store settings
         set_local_settings.set(settings.get_untracked());
 
         let user_agent = web_sys::window()
@@ -168,6 +190,7 @@ fn MainView(yaixm: Yaixm, overlay: Resource<(), OverlayData>) -> impl IntoView {
             </div>
         </div>
 
+        // Release note overlay
         <div class="modal" class:is-active=modal>
             <div class="modal-background"></div>
                 <div class="modal-content">
