@@ -215,7 +215,7 @@ fn do_name(feature: &Feature, vol: &Volume, n: usize, settings: &Settings) -> St
         if settings.format == Format::Competition && feature.geometry.len() > 1 {
             name.push('-');
             if let Some(seq) = &vol.seq {
-                name += &seq;
+                name += seq;
             } else {
                 let x = (b'A'..=b'Z').map(|c| c as char).nth(n);
                 name.push(x.unwrap());
