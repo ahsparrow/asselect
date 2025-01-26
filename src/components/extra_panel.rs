@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 //
-use leptos::*;
+use leptos::prelude::*;
 
 use crate::settings::{ExtraType, Settings};
 
@@ -46,7 +46,7 @@ pub fn ExtraPanel(names: Vec<String>, id: ExtraType) -> impl IntoView {
                                                 })
                                         }
                                     />
-                                    {&n}
+                                    {n}
                                 </label>
                             </div>
                         </div>

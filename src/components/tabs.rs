@@ -13,11 +13,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 //
-use leptos::*;
+use leptos::prelude::*;
 
 #[component]
-pub fn Tabs(tab_names: Vec<String>, children: Children) -> impl IntoView {
-    let (selected, set_selected) = create_signal(0);
+pub fn Tabs(tab_names: Vec<String>, children: ChildrenFragment) -> impl IntoView {
+    let (selected, set_selected) = signal(0);
 
     view! {
         <nav class="tabs">

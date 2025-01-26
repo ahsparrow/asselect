@@ -13,26 +13,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 //
-use leptos::*;
+use leptos::prelude::*;
 
 use crate::settings::{ExtraType, Settings};
 
 #[component]
-pub fn ExtraTab(children: Children, names: Vec<String>, ids: Vec<ExtraType>) -> impl IntoView {
+pub fn ExtraTab(
+    children: ChildrenFragment,
+    names: Vec<String>,
+    ids: Vec<ExtraType>,
+) -> impl IntoView {
     let setter = use_context::<WriteSignal<Settings>>().expect("to find setter");
 
-    let (get, set) = create_signal(0);
+    let (get, set) = signal(0);
 
     names
         .iter()
-        .zip(children().nodes.iter())
+        .zip(children().nodes.into_iter())
         .zip(ids)
         .enumerate()
         .map(|(n, ((name, child), id))| {
             view! {
                 <div class="card block">
                     <header class="card-header is-clickable" on:click=move |_| set(n)>
-                        <p class="card-header-title">{name}</p>
+                        <p class="card-header-title">{name.clone()}</p>
                         <div hidden=move || get() != n>
                             <div class="card-header-icon">
                                 <input
@@ -45,7 +49,7 @@ pub fn ExtraTab(children: Children, names: Vec<String>, ids: Vec<ExtraType>) -> 
                         </div>
                     </header>
 
-                    <div class="card-content" hidden=move || get() != n>
+                    <div class="card-content" hidden=move || get() != n >
                         {child}
                     </div>
                 </div>

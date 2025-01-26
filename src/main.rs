@@ -13,12 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 //
+use codee::string::JsonSerdeCodec;
 use futures::join;
 use gloo::file::{Blob, ObjectUrl};
 use gloo::net::http::Request;
-use leptos::*;
+use leptos::html::{p, A};
+use leptos::prelude::*;
+use leptos::web_sys;
 use leptos_use::storage::use_local_storage;
-use leptos_use::utils::JsonCodec;
 
 use components::{
     about_tab::AboutTab, airspace_tab::AirspaceTab, extra_panel::ExtraPanel, extra_tab::ExtraTab,
@@ -42,49 +44,47 @@ struct OverlayData {
 
 #[component]
 fn App() -> impl IntoView {
-    let async_yaixm = create_local_resource(|| (), |_| async move { fetch_yaixm().await });
+    let async_yaixm = LocalResource::new(fetch_yaixm);
 
-    let async_overlay = create_local_resource(
-        || (),
-        |_| async move {
-            let overlay_195 = fetch_overlay("overlay_195.txt");
-            let overlay_105 = fetch_overlay("overlay_105.txt");
-            let overlay_atzdz = fetch_overlay("overlay_atzdz.txt");
-            let (o_195, o_105, o_atzdz) = join!(overlay_195, overlay_105, overlay_atzdz);
-            OverlayData {
-                overlay_195: o_195,
-                overlay_105: o_105,
-                overlay_atzdz: o_atzdz,
+    let async_overlay = LocalResource::new(|| async {
+        let overlay_195 = fetch_overlay("overlay_195.txt");
+        let overlay_105 = fetch_overlay("overlay_105.txt");
+        let overlay_atzdz = fetch_overlay("overlay_atzdz.txt");
+        let (o_195, o_105, o_atzdz) = join!(overlay_195, overlay_105, overlay_atzdz);
+        OverlayData {
+            overlay_195: o_195,
+            overlay_105: o_105,
+            overlay_atzdz: o_atzdz,
+        }
+    });
+
+    move || match async_yaixm.get().as_deref() {
+        Some(resource) => match resource {
+            Some(yaixm) => {
+                view! { <MainView yaixm=yaixm.clone() overlay=async_overlay /> }
             }
+            .into_any(),
+            None => p().child("Error getting airspace data").into_any(),
         },
-    );
-
-    view! {
-        {move || match async_yaixm.get() {
-            Some(resource) => {
-                match resource {
-                    Some(yaixm) => view! { <MainView yaixm=yaixm overlay=async_overlay/> }.into_view(),
-                    None => view! { <p>"Error getting airspace data"</p> }.into_view(),
-                }
-            }
-            None => view! { <p>"Getting airspace data, please wait..."</p> }.into_view(),
-        }}
+        None => p()
+            .child("Getting airspace data, please wait...")
+            .into_any(),
     }
 }
 
 #[component]
-fn MainView(yaixm: Yaixm, overlay: Resource<(), OverlayData>) -> impl IntoView {
+fn MainView(yaixm: Yaixm, overlay: LocalResource<OverlayData>) -> impl IntoView {
     // Local settings storage
     let (local_settings, set_local_settings, _) =
-        use_local_storage::<Settings, JsonCodec>("settings");
+        use_local_storage::<Settings, JsonSerdeCodec>("settings");
 
     // Make copy of settings so store value is only updated on download
-    let (settings, set_settings) = create_signal(local_settings.get_untracked());
+    let (settings, set_settings) = signal(local_settings.get_untracked());
     provide_context(settings);
     provide_context(set_settings);
 
     // Release note modal display control
-    let (modal, set_modal) = create_signal(false);
+    let (modal, set_modal) = signal(false);
 
     // UI data from YAIXM
     let rat_names = rat_names(&yaixm);
@@ -116,6 +116,8 @@ fn MainView(yaixm: Yaixm, overlay: Resource<(), OverlayData>) -> impl IntoView {
 
     let extra_ids = vec![ExtraType::Rat, ExtraType::Loa, ExtraType::Wave];
 
+    let download_node_ref = NodeRef::<A>::new();
+
     // Download button callback
     let download = move |_| {
         // Store settings
@@ -130,11 +132,11 @@ fn MainView(yaixm: Yaixm, overlay: Resource<(), OverlayData>) -> impl IntoView {
 
         // Get overlay data
         let od = if let Some(overlay_setting) = settings().overlay {
-            if let Some(overlay_data) = overlay.get() {
+            if let Some(overlay_data) = overlay.get().as_deref() {
                 let x = match overlay_setting {
-                    Overlay::FL195 => overlay_data.overlay_195,
-                    Overlay::FL105 => overlay_data.overlay_105,
-                    Overlay::AtzDz => overlay_data.overlay_atzdz,
+                    Overlay::FL195 => overlay_data.clone().overlay_195,
+                    Overlay::FL105 => overlay_data.clone().overlay_105,
+                    Overlay::AtzDz => overlay_data.clone().overlay_atzdz,
                 };
                 x.unwrap_or("* Missing overlay data".to_string())
             } else {
@@ -148,8 +150,7 @@ fn MainView(yaixm: Yaixm, overlay: Resource<(), OverlayData>) -> impl IntoView {
         let blob = Blob::new((oa + od.as_str()).as_str());
         let object_url = ObjectUrl::from(blob);
 
-        // Trigger a "fake" download
-        let a = leptos::html::a();
+        let a = download_node_ref.get().unwrap();
         a.set_download("openair.txt");
         a.set_href(&object_url);
         a.click();
@@ -201,6 +202,9 @@ fn MainView(yaixm: Yaixm, overlay: Resource<(), OverlayData>) -> impl IntoView {
                 </div>
             <button class="modal-close is-large" on:click=move |_| set_modal(false)></button>
         </div>
+
+        // For data download
+        <a hidden node_ref=download_node_ref></a>
     }
 }
 
