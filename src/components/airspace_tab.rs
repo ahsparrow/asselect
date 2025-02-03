@@ -13,8 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 //
+use leptos::html::div;
 use leptos::prelude::*;
 
+use crate::components::select_field::select_field;
 use crate::settings::{AirType, Settings};
 
 #[component]
@@ -22,231 +24,80 @@ pub fn AirspaceTab(gliding_sites: Vec<String>) -> impl IntoView {
     let setter = use_context::<WriteSignal<Settings>>().expect("to find setter");
     let getter = use_context::<ReadSignal<Settings>>().expect("to find getter");
 
-    view! {
-        <div class="box">
-            <div class="columns">
-                <div class="column is-one-third">
-                    <div class="field">
-                        <label class="label">
-                            "ATZ" <div class="control">
-                                <div class="select is-fullwidth">
-                                    <select on:change=move |ev| {
-                                        setter.update(|s| s.update("atz", &event_target_value(&ev)))
-                                    }>
-                                        <option
-                                            value=AirType::ClassD.to_string()
-                                            selected=move || getter().atz == AirType::ClassD
-                                        >
-                                            "Class D"
-                                        </option>
-                                        <option
-                                            value=AirType::Ctr.to_string()
-                                            selected=move || getter().atz == AirType::Ctr
-                                        >
-                                            "Control Zone"
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-                </div>
+    let gsites: Vec<&str> = vec!["No"]
+        .into_iter()
+        .chain(gliding_sites.iter().map(AsRef::as_ref))
+        .collect();
 
-                <div class="column is-one-third">
-                    <div class="field">
-                        <label class="label">
-                            "ILS Feather" <div class="control">
-                                <div class="select is-fullwidth">
-                                    <select on:change=move |ev| {
-                                        setter.update(|s| s.update("ils", &event_target_value(&ev)))
-                                    }>
-                                        <option
-                                            value="None"
-                                            selected=move || getter().ils.is_none()
-                                        >
-                                            "As ATZ"
-                                        </option>
-                                        <option
-                                            value=AirType::ClassF.to_string()
-                                            selected=move || getter().ils == Some(AirType::ClassF)
-                                        >
-                                            "Class F"
-                                        </option>
-                                        <option
-                                            value=AirType::ClassG.to_string()
-                                            selected=move || getter().ils == Some(AirType::ClassG)
-                                        >
-                                            "Class G"
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="columns">
-                <div class="column is-one-third">
-                    <div class="field">
-                        <label class="label">
-                            "Non-ATZ Airfield" <div class="control">
-                                <div class="select is-fullwidth">
-                                    <select on:change=move |ev| {
-                                        setter
-                                            .update(|s| {
-                                                s.update("unlicensed", &event_target_value(&ev))
-                                            })
-                                    }>
-                                        <option
-                                            value="None"
-                                            selected=move || getter().unlicensed.is_none()
-                                        >
-                                            "No"
-                                        </option>
-                                        <option
-                                            value=AirType::ClassF.to_string()
-                                            selected=move || {
-                                                getter().unlicensed == Some(AirType::ClassF)
-                                            }
-                                        >
-                                            "Class F"
-                                        </option>
-                                        <option
-                                            value=AirType::ClassG.to_string()
-                                            selected=move || {
-                                                getter().unlicensed == Some(AirType::ClassG)
-                                            }
-                                        >
-                                            "Class G"
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="column is-one-third">
-                    <div class="field">
-                        <label class="label">
-                            "Microlight Airfield" <div class="control">
-                                <div class="select is-fullwidth">
-                                    <select on:change=move |ev| {
-                                        setter
-                                            .update(|s| {
-                                                s.update("microlight", &event_target_value(&ev))
-                                            })
-                                    }>
-                                        <option
-                                            value="None"
-                                            selected=move || getter().microlight.is_none()
-                                        >
-                                            "No"
-                                        </option>
-                                        <option
-                                            value=AirType::ClassF.to_string()
-                                            selected=move || {
-                                                getter().microlight == Some(AirType::ClassF)
-                                            }
-                                        >
-                                            "Class F"
-                                        </option>
-                                        <option
-                                            value=AirType::ClassG.to_string()
-                                            selected=move || {
-                                                getter().microlight == Some(AirType::ClassG)
-                                            }
-                                        >
-                                            "Class G"
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="columns">
-                <div class="column is-one-third">
-                    <div class="field">
-                        <label class="label">
-                            "Gliding Airfield"
-                            <div class="control">
-                                <div class="select is-fullwidth">
-                                    <select on:change=move |ev| {
-                                        setter
-                                            .update(|s| s.update("gliding", &event_target_value(&ev)))
-                                    }>
-                                        <option
-                                            value="None"
-                                            selected=move || getter().gliding.is_none()
-                                        >
-                                            "No"
-                                        </option>
-                                        <option
-                                            value=AirType::Gliding.to_string()
-                                            selected=move || {
-                                                getter().gliding == Some(AirType::Gliding)
-                                            }
-                                        >
-                                            "Gliding Sector"
-                                        </option>
-                                        <option
-                                            value=AirType::ClassF.to_string()
-                                            selected=move || {
-                                                getter().gliding == Some(AirType::ClassF)
-                                            }
-                                        >
-                                            "Class F"
-                                        </option>
-                                        <option
-                                            value=AirType::ClassG.to_string()
-                                            selected=move || {
-                                                getter().gliding == Some(AirType::ClassG)
-                                            }
-                                        >
-                                            "Class G"
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="column is-one-third">
-                    <div class="field">
-                        <label class="label">
-                            "Exclude Home Airfield" <div class="control">
-                                <div class="select is-fullwidth">
-                                    <select
-                                        name="home"
-                                        on:change=move |ev| {
-                                            setter
-                                                .update(|s| s.update("home", &event_target_value(&ev)))
-                                        }
-                                    >
-                                        <option value="no" selected=move || getter().home.is_none()>"No"</option>
-                                        {gliding_sites
-                                            .into_iter()
-                                            .map(|n|  {
-                                                let nc = n.clone();
-                                                view! {
-                                                    <option selected=move || Some(&n) == getter().home.as_ref()>
-                                                        {nc}
-                                                    </option>
-                                                }
-                                            })
-                                            .collect_view()}
-                                    </select>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
+    div().child(div().class("box").child((
+        div().class("columns").child((
+            div().class("column is-one-third").child(select_field(
+                setter,
+                Signal::derive(move || getter().atz.to_string()),
+                "ATZ",
+                "atz",
+                &vec!["Class D", "Control Zone"],
+                &vec![AirType::ClassD.as_ref(), AirType::Ctr.as_ref()],
+            )),
+            div().class("column is-one-third").child(select_field(
+                setter,
+                Signal::derive(move || getter().ils.map_or("no".to_string(), |v| v.to_string())),
+                "ILS Feather",
+                "ils",
+                &vec!["As ATZ", "Class F", "Class G"],
+                &vec!["no", AirType::ClassF.as_ref(), AirType::ClassG.as_ref()],
+            )),
+        )),
+        div().class("columns").child((
+            div().class("column is-one-third").child(select_field(
+                setter,
+                Signal::derive(move || {
+                    getter()
+                        .unlicensed
+                        .map_or("no".to_string(), |v| v.to_string())
+                }),
+                "Non-ATZ Airfield",
+                "unlicensed",
+                &vec!["No", "Class F", "Class G"],
+                &vec!["no", AirType::ClassF.as_ref(), AirType::ClassG.as_ref()],
+            )),
+            div().class("column is-one-third").child(select_field(
+                setter,
+                Signal::derive(move || {
+                    getter()
+                        .microlight
+                        .map_or("no".to_string(), |v| v.to_string())
+                }),
+                "Microlight Airfield",
+                "microlight",
+                &vec!["No", "Class F", "Class G"],
+                &vec!["no", AirType::ClassF.as_ref(), AirType::ClassG.as_ref()],
+            )),
+        )),
+        div().class("columns").child((
+            div().class("column is-one-third").child(select_field(
+                setter,
+                Signal::derive(move || {
+                    getter().gliding.map_or("no".to_string(), |v| v.to_string())
+                }),
+                "Gliding Airfield",
+                "gliding",
+                &vec!["No", "Gliding Sector", "Class F", "Class G"],
+                &vec![
+                    "no",
+                    AirType::Gliding.as_ref(),
+                    AirType::ClassF.as_ref(),
+                    AirType::ClassG.as_ref(),
+                ],
+            )),
+            div().class("column is-one-third").child(select_field(
+                setter,
+                Signal::derive(move || getter().home.map_or("No".to_string(), |v| v.to_string())),
+                "Exclude Home Airfield",
+                "home",
+                &gsites,
+                &gsites,
+            )),
+        )),
+    )))
 }

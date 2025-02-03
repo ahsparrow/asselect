@@ -16,10 +16,10 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 use std::str::FromStr;
-use strum_macros::{Display, EnumString};
+use strum_macros::{AsRefStr, Display, EnumString};
 
 // Airspace types
-#[derive(Clone, Copy, Debug, Deserialize, Display, EnumString, PartialEq, Serialize)]
+#[derive(AsRefStr, Clone, Copy, Debug, Deserialize, Display, EnumString, PartialEq, Serialize)]
 pub enum AirType {
     ClassA,
     ClassB,
@@ -41,7 +41,7 @@ pub enum AirType {
 }
 
 // Output format
-#[derive(Clone, Debug, Deserialize, Display, EnumString, PartialEq, Serialize)]
+#[derive(AsRefStr, Clone, Debug, Deserialize, Display, EnumString, PartialEq, Serialize)]
 pub enum Format {
     OpenAir,
     RatOnly,
@@ -49,7 +49,7 @@ pub enum Format {
 }
 
 // Altutude layer overlay
-#[derive(Clone, Debug, Deserialize, Display, EnumString, PartialEq, Serialize)]
+#[derive(AsRefStr, Clone, Debug, Deserialize, Display, EnumString, PartialEq, Serialize)]
 pub enum Overlay {
     FL195,
     FL105,

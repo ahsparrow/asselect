@@ -13,8 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 //
+use leptos::html::div;
 use leptos::prelude::*;
 
+use crate::components::select_field::select_field;
 use crate::settings::{AirType, Format, Overlay, Settings};
 
 #[component]
@@ -22,257 +24,95 @@ pub fn OptionTab() -> impl IntoView {
     let setter = use_context::<WriteSignal<Settings>>().expect("to find setter");
     let getter = use_context::<ReadSignal<Settings>>().expect("to find getter");
 
-    view! {
-        <div class="box">
-            <div class="columns">
-                <div class="column is-one-third">
-                    <div class="field">
-                        <label class="label">
-                            "Format"
-                            <div class="control">
-                                <div class="select is-fullwidth">
-                                    <select on:change=move |ev| {
-                                        setter.update(|s| s.update("format", &event_target_value(&ev)))
-                                    }>
-                                        <option
-                                            value=Format::OpenAir.to_string()
-                                            selected=move || getter().format == Format::OpenAir
-                                        >
-                                            "OpenAir"
-                                        </option>
-                                        <option
-                                            value=Format::RatOnly.to_string()
-                                            selected=move || getter().format == Format::RatOnly
-                                        >
-                                            "RA(T) Only"
-                                        </option>
-                                        <option
-                                            value=Format::Competition.to_string()
-                                            selected=move || getter().format == Format::Competition
-                                        >
-                                            "Competition"
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="column is-one-third">
-                    <div class="field">
-                        <label class="label">
-                            "Maximum Level"
-                            <div class="control">
-                                <div class="select is-fullwidth">
-                                    <select on:change=move |ev| {
-                                        setter.update(|s| s.update("max_level", &event_target_value(&ev)))
-                                    }>
-                                        <option
-                                            value="660"
-                                            selected=move || getter().max_level == 660
-                                        >
-                                            "Unlimited"
-                                        </option>
-                                        <option
-                                            value="195"
-                                            selected=move || getter().max_level == 195
-                                        >
-                                            "FL195"
-                                        </option>
-                                        <option
-                                            value="125"
-                                            selected=move || getter().max_level == 125
-                                        >
-                                            "FL125"
-                                        </option>
-                                        <option
-                                            value="105"
-                                            selected=move || getter().max_level == 105
-                                        >
-                                            "FL105"
-                                        </option>
-                                        <option
-                                            value="65"
-                                            selected=move || getter().max_level == 65
-                                        >
-                                            "FL65"
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="columns">
-                <div class="column is-one-third">
-                    <div class="field">
-                        <label class="label">
-                            "HIRTA/GVS"
-                            <div class="control">
-                                <div class="select is-fullwidth">
-                                    <select on:change=move |ev| {
-                                        setter
-                                            .update(|s| {
-                                                s.update("hirta_gvs", &event_target_value(&ev))
-                                            })
-                                    }>
-                                        <option
-                                            value="None"
-                                            selected=move || getter().hirta_gvs.is_none()
-                                        >
-                                            "No"
-                                        </option>
-                                        <option
-                                            value=AirType::Danger.to_string()
-                                            selected=move || {
-                                                getter().hirta_gvs == Some(AirType::Danger)
-                                            }
-                                        >
-                                            "Danger"
-                                        </option>
-                                        <option
-                                            value=AirType::Restricted.to_string()
-                                            selected=move || {
-                                                getter().hirta_gvs == Some(AirType::Restricted)
-                                            }
-                                        >
-                                            "Restricted"
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="column is-one-third">
-                    <div class="field">
-                        <label class="label">
-                            "Obstacle"
-                            <div class="control">
-                                <div class="select is-fullwidth">
-                                    <select on:change=move |ev| {
-                                        setter
-                                            .update(|s| {
-                                                s.update("obstacle", &event_target_value(&ev))
-                                            })
-                                    }>
-                                        <option
-                                            value="None"
-                                            selected=move || getter().obstacle.is_none()
-                                        >
-                                            "No"
-                                        </option>
-                                        <option
-                                            value=AirType::Danger.to_string()
-                                            selected=move || {
-                                                getter().obstacle == Some(AirType::Danger)
-                                            }
-                                        >
-                                            "Danger"
-                                        </option>
-                                        <option
-                                            value=AirType::ClassF.to_string()
-                                            selected=move || {
-                                                getter().obstacle == Some(AirType::ClassF)
-                                            }
-                                        >
-                                            "Class F"
-                                        </option>
-                                        <option
-                                            value=AirType::ClassG.to_string()
-                                            selected=move || {
-                                                getter().obstacle == Some(AirType::ClassG)
-                                            }
-                                        >
-                                            "Class G"
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="columns">
-                <div class="column is-one-third">
-                    <div class="field">
-                        <label class="label">
-                            "Radio Frequency"
-                            <div class="control">
-                                <div class="select is-fullwidth">
-                                    <select on:change=move |ev| {
-                                        setter
-                                            .update(|s| {
-                                                s.update("radio", &event_target_value(&ev))
-                                            })
-                                    }>
-                                        <option
-                                            value="no"
-                                            selected=move || !getter().radio
-                                        >
-                                            "No"
-                                        </option>
-                                        <option
-                                            value="yes"
-                                            selected=move || getter().radio
-                                        >
-                                            "Add to name"
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="column is-one-third">
-                    <div class="field">
-                        <label class="label">
-                            "Altitude Overlay"
-                            <div class="control">
-                                <div class="select is-fullwidth">
-                                    <select on:change=move |ev| {
-                                        setter
-                                            .update(|s| {
-                                                s.update("overlay", &event_target_value(&ev))
-                                            })
-                                    }>
-                                        <option
-                                            value="no"
-                                            selected=move || getter().overlay.is_none()
-                                        >
-                                            "None"
-                                        </option>
-                                        <option
-                                            value=Overlay::FL195.to_string()
-                                            selected=move || getter().overlay  == Some(Overlay::FL195)
-                                        >
-                                            "Bases to FL195"
-                                        </option>
-                                        <option
-                                            value=Overlay::FL105.to_string()
-                                            selected=move || getter().overlay == Some(Overlay::FL105)
-                                        >
-                                            "Bases to FL105"
-                                        </option>
-                                        <option
-                                            value=Overlay::AtzDz.to_string()
-                                            selected=move || getter().overlay == Some(Overlay::AtzDz)
-                                        >
-                                            "Bases to FL105 and ATZ/DZ"
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
+    div().child(div().class("box").child((
+        div().class("columns").child((
+            div().class("column is-one-third").child(select_field(
+                setter,
+                Signal::derive(move || getter().format.to_string()),
+                "Format",
+                "format",
+                &vec!["OpenAir", "RA(T) Only", "Competition"],
+                &vec![
+                    Format::OpenAir.as_ref(),
+                    Format::RatOnly.as_ref(),
+                    Format::Competition.as_ref(),
+                ],
+            )),
+            div().class("column is-one-third").child(select_field(
+                setter,
+                Signal::derive(move || getter().max_level.to_string()),
+                "Maximum Level",
+                "max_level",
+                &vec!["Unlimited", "FL195", "FL125", "FL105", "FL65"],
+                &vec!["660", "195", "125", "105", "65"],
+            )),
+        )),
+        div().class("columns").child((
+            div().class("column is-one-third").child(select_field(
+                setter,
+                Signal::derive(move || {
+                    getter()
+                        .hirta_gvs
+                        .map_or("no".to_string(), |v| v.to_string())
+                }),
+                "HIRTA/GVS",
+                "hirta_gvs",
+                &vec!["No", "Danger", "Restricted"],
+                &vec!["no", AirType::Danger.as_ref(), AirType::Restricted.as_ref()],
+            )),
+            div().class("column is-one-third").child(select_field(
+                setter,
+                Signal::derive(move || {
+                    getter()
+                        .obstacle
+                        .map_or("no".to_string(), |v| v.to_string())
+                }),
+                "Obstacle",
+                "obstacle",
+                &vec!["No", "Danger", "Class F", "Class G"],
+                &vec![
+                    "no",
+                    AirType::Danger.as_ref(),
+                    AirType::ClassF.as_ref(),
+                    AirType::ClassG.as_ref(),
+                ],
+            )),
+        )),
+        div().class("columns").child((
+            div().class("column is-one-third").child(select_field(
+                setter,
+                Signal::derive(move || {
+                    if getter().radio {
+                        "yes".to_string()
+                    } else {
+                        "no".to_string()
+                    }
+                }),
+                "Radio Frequency",
+                "radio",
+                &vec!["No", "Add to name"],
+                &vec!["no", "yes"],
+            )),
+            div().class("column is-one-third").child(select_field(
+                setter,
+                Signal::derive(move || {
+                    getter().overlay.map_or("no".to_string(), |v| v.to_string())
+                }),
+                "Altitude Overlay",
+                "overlay",
+                &vec![
+                    "No",
+                    "Bases to FL195",
+                    "Bases to FL105",
+                    "Bases to FL105 and ATZ/DZ",
+                ],
+                &vec![
+                    "no",
+                    Overlay::FL195.as_ref(),
+                    Overlay::FL105.as_ref(),
+                    Overlay::AtzDz.as_ref(),
+                ],
+            )),
+        )),
+    )))
 }
