@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 //
+use leptos::ev;
+use leptos::html::{div, header, input, p};
 use leptos::prelude::*;
 
 use crate::settings::{ExtraType, Settings};
@@ -32,28 +34,28 @@ pub fn ExtraTab(
         .zip(children().nodes.into_iter())
         .zip(ids)
         .enumerate()
-        .map(|(n, ((name, child), id))| {
-            view! {
-                <div class="card block">
-                    <header class="card-header is-clickable" on:click=move |_| set(n)>
-                        <p class="card-header-title">{name.clone()}</p>
-                        <div hidden=move || get() != n>
-                            <div class="card-header-icon">
-                                <input
-                                    class="button is-info is-light is-small ml-2"
-                                    type="button"
-                                    value="Clear"
-                                    on:click=move |_| setter.update(|s| s.clear_extra(id))
-                                />
-                            </div>
-                        </div>
-                    </header>
-
-                    <div class="card-content" hidden=move || get() != n >
-                        {child}
-                    </div>
-                </div>
-            }
+        .map(|(n, ((name, cld), id))| {
+            div().class("card block").child((
+                header()
+                    .class("card-header is-clickable")
+                    .on(ev::click, move |_| set(n))
+                    .child((
+                        p().class("card-header-title").child(name.clone()),
+                        div().hidden(move || get() != n).child(
+                            div().class("card-header-icon").child(
+                                input()
+                                    .r#type("button")
+                                    .class("button is-info is-light is-small ml-2")
+                                    .value("Clear")
+                                    .on(ev::click, move |_| setter.update(|s| s.clear_extra(id))),
+                            ),
+                        ),
+                    )),
+                div()
+                    .class("card-content")
+                    .hidden(move || get() != n)
+                    .child(cld),
+            ))
         })
         .collect_view()
 }
