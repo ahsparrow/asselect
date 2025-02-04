@@ -13,37 +13,43 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 //
+use leptos::ev;
+use leptos::html::{a, div, li, nav, ul};
 use leptos::prelude::*;
 
 #[component]
 pub fn Tabs(tab_names: Vec<String>, children: ChildrenFragment) -> impl IntoView {
     let (selected, set_selected) = signal(0);
 
-    view! {
-        <nav class="tabs">
-            <ul>
-                {tab_names
+    (
+        nav().class("tabs").child(
+            ul().child(
+                tab_names
                     .into_iter()
                     .enumerate()
                     .map(|(index, tab_name)| {
-                        view! {
-                            <li class:is-active=move || selected() == index>
-                                <a on:click=move |_| set_selected(index)>{tab_name}</a>
-                            </li>
-                        }
+                        li().class(move || {
+                            if selected() == index {
+                                Some("is-active")
+                            } else {
+                                None
+                            }
+                        })
+                        .child(
+                            a().on(ev::click, move |_| set_selected(index))
+                                .child(tab_name),
+                        )
                     })
-                    .collect_view()}
-
-            </ul>
-        </nav>
-
-        <div class="mx-4">
-            {children()
+                    .collect_view(),
+            ),
+        ),
+        div().class("mx-4").child(
+            children()
                 .nodes
                 .into_iter()
                 .enumerate()
-                .map(|(index, child)| view! { <div hidden=move || index != selected()>{child}</div> })
-                .collect_view()}
-        </div>
-    }
+                .map(|(index, child)| div().hidden(move || index != selected()).child(child))
+                .collect_view(),
+        ),
+    )
 }
