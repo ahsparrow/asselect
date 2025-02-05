@@ -24,7 +24,7 @@ use leptos::web_sys;
 use leptos_use::storage::use_local_storage;
 
 use components::{
-    about_tab::AboutTab, airspace_tab::airspace_tab, extra_panel::extra_panel,
+    about_tab::about_tab, airspace_tab::airspace_tab, extra_panel::extra_panel,
     extra_tab::extra_tab, notam_tab::notam_tab, option_tab::option_tab, tabs::tabs,
 };
 use convert::openair;
@@ -170,7 +170,7 @@ fn MainView(yaixm: Yaixm, overlay: LocalResource<OverlayData>) -> impl IntoView 
         )
         .into_any(),
         notam_tab().into_any(),
-        AboutTab().into_any(),
+        about_tab().into_any(),
     ];
 
     (
