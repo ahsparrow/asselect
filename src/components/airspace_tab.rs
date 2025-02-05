@@ -19,8 +19,7 @@ use leptos::prelude::*;
 use crate::components::select_field::select_field;
 use crate::settings::{AirType, Settings};
 
-#[component]
-pub fn AirspaceTab(gliding_sites: Vec<String>) -> impl IntoView {
+pub fn airspace_tab(gliding_sites: Vec<String>) -> impl IntoView {
     let setter = use_context::<WriteSignal<Settings>>().expect("to find setter");
     let getter = use_context::<ReadSignal<Settings>>().expect("to find getter");
 

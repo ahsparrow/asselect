@@ -16,8 +16,7 @@
 use leptos::html::{a, div};
 use leptos::prelude::*;
 
-#[component]
-pub fn NotamTab() -> impl IntoView {
+pub fn notam_tab() -> impl IntoView {
     div().child((
         div().class("subtitle") .child("Navigation Warnings"),
         div().class("block")

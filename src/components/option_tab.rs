@@ -19,8 +19,7 @@ use leptos::prelude::*;
 use crate::components::select_field::select_field;
 use crate::settings::{AirType, Format, Overlay, Settings};
 
-#[component]
-pub fn OptionTab() -> impl IntoView {
+pub fn option_tab() -> impl IntoView {
     let setter = use_context::<WriteSignal<Settings>>().expect("to find setter");
     let getter = use_context::<ReadSignal<Settings>>().expect("to find getter");
 

@@ -17,8 +17,7 @@ use leptos::ev;
 use leptos::html::{a, div, li, nav, ul};
 use leptos::prelude::*;
 
-#[component]
-pub fn Tabs(tab_names: Vec<String>, children: ChildrenFragment) -> impl IntoView {
+pub fn tabs(tab_names: Vec<String>, children: Vec<AnyView>) -> impl IntoView {
     let (selected, set_selected) = signal(0);
 
     (
@@ -44,8 +43,7 @@ pub fn Tabs(tab_names: Vec<String>, children: ChildrenFragment) -> impl IntoView
             ),
         ),
         div().class("mx-4").child(
-            children()
-                .nodes
+            children
                 .into_iter()
                 .enumerate()
                 .map(|(index, child)| div().hidden(move || index != selected()).child(child))

@@ -19,8 +19,7 @@ use leptos::prelude::*;
 
 use crate::settings::{ExtraType, Settings};
 
-#[component]
-pub fn ExtraPanel(names: Vec<String>, id: ExtraType) -> impl IntoView {
+pub fn extra_panel(names: Vec<String>, id: ExtraType) -> impl IntoView {
     let setter = use_context::<WriteSignal<Settings>>().expect("to find setter");
     let getter = use_context::<ReadSignal<Settings>>().expect("to find getter");
 

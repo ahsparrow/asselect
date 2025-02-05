@@ -19,19 +19,14 @@ use leptos::prelude::*;
 
 use crate::settings::{ExtraType, Settings};
 
-#[component]
-pub fn ExtraTab(
-    children: ChildrenFragment,
-    names: Vec<String>,
-    ids: Vec<ExtraType>,
-) -> impl IntoView {
+pub fn extra_tab(children: Vec<AnyView>, names: Vec<String>, ids: Vec<ExtraType>) -> impl IntoView {
     let setter = use_context::<WriteSignal<Settings>>().expect("to find setter");
 
     let (get, set) = signal(0);
 
     names
         .iter()
-        .zip(children().nodes.into_iter())
+        .zip(children.into_iter())
         .zip(ids)
         .enumerate()
         .map(|(n, ((name, cld), id))| {

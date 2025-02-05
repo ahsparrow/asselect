@@ -17,14 +17,15 @@ use codee::string::JsonSerdeCodec;
 use futures::join;
 use gloo::file::{Blob, ObjectUrl};
 use gloo::net::http::Request;
-use leptos::html::{p, A};
+use leptos::ev;
+use leptos::html::{a, button, div, h2, header, p, pre, A};
 use leptos::prelude::*;
 use leptos::web_sys;
 use leptos_use::storage::use_local_storage;
 
 use components::{
-    about_tab::AboutTab, airspace_tab::AirspaceTab, extra_panel::ExtraPanel, extra_tab::ExtraTab,
-    notam_tab::NotamTab, option_tab::OptionTab, tabs::Tabs,
+    about_tab::AboutTab, airspace_tab::airspace_tab, extra_panel::extra_panel,
+    extra_tab::extra_tab, notam_tab::notam_tab, option_tab::option_tab, tabs::tabs,
 };
 use convert::openair;
 use settings::{ExtraType, Overlay, Settings};
@@ -42,8 +43,7 @@ struct OverlayData {
     overlay_atzdz: Option<String>,
 }
 
-#[component]
-fn App() -> impl IntoView {
+fn app() -> impl IntoView {
     let async_yaixm = LocalResource::new(fetch_yaixm);
 
     let async_overlay = LocalResource::new(|| async {
@@ -156,56 +156,74 @@ fn MainView(yaixm: Yaixm, overlay: LocalResource<OverlayData>) -> impl IntoView 
         a.click();
     };
 
-    view! {
-        <header class="hero is-small is-primary block">
-            <div class="hero-body">
-                <div class="container">
-                    <div class="title is-4">{"ASSelect - UK Airspace"}</div>
-                </div>
-            </div>
-        </header>
+    let children = vec![
+        airspace_tab(gliding_sites).into_any(),
+        option_tab().into_any(),
+        extra_tab(
+            vec![
+                extra_panel(rat_names, ExtraType::Rat).into_any(),
+                extra_panel(loa_names, ExtraType::Loa).into_any(),
+                extra_panel(wave_names, ExtraType::Wave).into_any(),
+            ],
+            extra_names,
+            extra_ids,
+        )
+        .into_any(),
+        notam_tab().into_any(),
+        AboutTab().into_any(),
+    ];
 
-        <div class="container block">
-            <Tabs tab_names>
-                <AirspaceTab gliding_sites=gliding_sites/>
-                <OptionTab/>
-                <ExtraTab names=extra_names ids=extra_ids>
-                    <ExtraPanel names=rat_names id=ExtraType::Rat/>
-                    <ExtraPanel names=loa_names id=ExtraType::Loa/>
-                    <ExtraPanel names=wave_names id=ExtraType::Wave/>
-                </ExtraTab>
-                <NotamTab/>
-                <AboutTab/>
-            </Tabs>
-        </div>
-
-        <div class="container block">
-            <div class="mx-4">
-                <button type="submit" class="button is-primary" on:click=download>
-                    {"Get Airspace"}
-                </button>
-
-                <a id="airac-button" class="button is-text is-pulled-right" on:click=move |_| set_modal(true)>
-                    "AIRAC: "{ airac_date }
-                </a>
-            </div>
-        </div>
-
+    (
+        // Page header
+        header().class("hero is-small is-primary block").child(
+            div().class("hero-body").child(
+                div()
+                    .class("container")
+                    .child(div().class("title is-4").child("ASSelect - UK Airspace")),
+            ),
+        ),
+        // Tabs
+        div()
+            .class("container block")
+            .child(tabs(tab_names, children)),
+        // Buttons
+        div().class("container block").child(
+            div().class("mx-4").child((
+                button()
+                    .r#type("submit")
+                    .class("button is-primary")
+                    .on(ev::click, download)
+                    .child("Get Airspace"),
+                a().id("airac-button")
+                    .class("button is-text is-pulled-right")
+                    .on(ev::click, move |_| set_modal(true))
+                    .child(format!("AIRAC: {}", airac_date)),
+            )),
+        ),
         // Release note overlay
-        <div class="modal" class:is-active=modal>
-            <div class="modal-background"></div>
-                <div class="modal-content">
-                    <div class="box">
-                        <h2 class="subtitle">{"Release Details"}</h2>
-                        <pre>{ release_note }</pre>
-                    </div>
-                </div>
-            <button class="modal-close is-large" on:click=move |_| set_modal(false)></button>
-        </div>
-
+        div()
+            .class(move || {
+                if modal.get() {
+                    "modal is-active"
+                } else {
+                    "modal"
+                }
+            })
+            .child((
+                div().class("modal-background"),
+                div()
+                    .class("modal-content")
+                    .child(div().class("box").child((
+                        h2().class("subtitle").child("Release Details"),
+                        pre().child(release_note),
+                    ))),
+                button()
+                    .class("modal-close is-large")
+                    .on(ev::click, move |_| set_modal(false)),
+            )),
         // For data download
-        <a hidden node_ref=download_node_ref></a>
-    }
+        a().hidden(true).node_ref(download_node_ref),
+    )
 }
 
 // Get YAIXM data from server
@@ -228,5 +246,5 @@ async fn fetch_overlay(path: &str) -> Option<String> {
 
 fn main() {
     console_error_panic_hook::set_once();
-    mount_to_body(|| view! { <App/> })
+    mount_to_body(app)
 }
