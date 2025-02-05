@@ -37,7 +37,7 @@ pub fn about_tab() -> impl IntoView {
              exclude your home site to avoid unnecessary airspace warnings.",
         )),
         p().child((
-            em().child("Microlight Airfields "),
+            em().child("Microlight Airfields: "),
             "Listed in ENR\u{00a0}5.5 and plotted with a radius of 0.5\u{00a0}nm.",
         )),
         p().child((
@@ -58,13 +58,13 @@ pub fn about_tab() -> impl IntoView {
             a().class("text-primary")
                 .href("https://members.gliding.co.uk/library/loas/")
                 .child("BGA website"),
-            ". A local club briefing is required before using any local agreement \
-             (Except Cambridge RAZ.)",
+            ". A local club briefing is required before using any local agreement, \
+             with the exception of the Cambridge RAZ.",
         )),
         div().class("subtitle").child("Radio Frequencies"),
         p().child(
-            "Radio frequencies are stored using the OpenAir \"AF\" record \
-            type. Optionally ASSelect can append them to the airspace name.",
+            "ASSelect stores radio frequencies using the OpenAir \"AF\" record \
+            type. Frequencies can optionally be append to the airspace name.",
         ),
         div()
             .class("subtitle")
