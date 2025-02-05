@@ -17,7 +17,7 @@ use leptos::ev;
 use leptos::html::{a, div, li, nav, ul};
 use leptos::prelude::*;
 
-pub fn tabs(tab_names: Vec<String>, children: Vec<AnyView>) -> impl IntoView {
+pub fn tabs(tab_names: Vec<&str>, children: Vec<AnyView>) -> impl IntoView {
     let (selected, set_selected) = signal(0);
 
     (
@@ -36,7 +36,7 @@ pub fn tabs(tab_names: Vec<String>, children: Vec<AnyView>) -> impl IntoView {
                         })
                         .child(
                             a().on(ev::click, move |_| set_selected(index))
-                                .child(tab_name),
+                                .child(tab_name.to_string()),
                         )
                     })
                     .collect_view(),

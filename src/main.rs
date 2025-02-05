@@ -100,20 +100,9 @@ fn MainView(yaixm: Yaixm, overlay: LocalResource<OverlayData>) -> impl IntoView 
     let release_note = yaixm.release.note.clone();
 
     // UI static data
-    let tab_names = vec![
-        "Main".to_string(),
-        "Option".to_string(),
-        "Extra".to_string(),
-        "NOTAM".to_string(),
-        "About".to_string(),
-    ];
+    let tab_names = vec!["Main", "Option", "Extra", "NOTAM", "About"];
 
-    let extra_names = vec![
-        "Temporary Restrictions".to_string(),
-        "Local Agreements".to_string(),
-        "Wave Boxes".to_string(),
-    ];
-
+    let extra_names = vec!["Temporary Restrictions", "Local Agreements", "Wave Boxes"];
     let extra_ids = vec![ExtraType::Rat, ExtraType::Loa, ExtraType::Wave];
 
     let download_node_ref = NodeRef::<A>::new();

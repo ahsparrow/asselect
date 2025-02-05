@@ -19,7 +19,7 @@ use leptos::prelude::*;
 
 use crate::settings::{ExtraType, Settings};
 
-pub fn extra_tab(children: Vec<AnyView>, names: Vec<String>, ids: Vec<ExtraType>) -> impl IntoView {
+pub fn extra_tab(children: Vec<AnyView>, names: Vec<&str>, ids: Vec<ExtraType>) -> impl IntoView {
     let setter = use_context::<WriteSignal<Settings>>().expect("to find setter");
 
     let (get, set) = signal(0);
@@ -35,7 +35,7 @@ pub fn extra_tab(children: Vec<AnyView>, names: Vec<String>, ids: Vec<ExtraType>
                     .class("card-header is-clickable")
                     .on(ev::click, move |_| set(n))
                     .child((
-                        p().class("card-header-title").child(name.clone()),
+                        p().class("card-header-title").child(name.to_string()),
                         div().hidden(move || get() != n).child(
                             div().class("card-header-icon").child(
                                 input()
