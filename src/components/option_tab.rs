@@ -27,7 +27,7 @@ pub fn option_tab() -> impl IntoView {
         div().class("columns").child((
             div().class("column is-one-third").child(select_field(
                 setter,
-                Signal::derive(move || getter().format.to_string()),
+                Signal::derive(move || getter.get().format.to_string()),
                 "Format",
                 "format",
                 &vec!["OpenAir", "RA(T) Only", "Competition"],
@@ -39,7 +39,7 @@ pub fn option_tab() -> impl IntoView {
             )),
             div().class("column is-one-third").child(select_field(
                 setter,
-                Signal::derive(move || getter().max_level.to_string()),
+                Signal::derive(move || getter.get().max_level.to_string()),
                 "Maximum Level",
                 "max_level",
                 &vec!["Unlimited", "FL195", "FL125", "FL105", "FL65"],
@@ -50,7 +50,8 @@ pub fn option_tab() -> impl IntoView {
             div().class("column is-one-third").child(select_field(
                 setter,
                 Signal::derive(move || {
-                    getter()
+                    getter
+                        .get()
                         .hirta_gvs
                         .map_or("no".to_string(), |v| v.to_string())
                 }),
@@ -62,7 +63,8 @@ pub fn option_tab() -> impl IntoView {
             div().class("column is-one-third").child(select_field(
                 setter,
                 Signal::derive(move || {
-                    getter()
+                    getter
+                        .get()
                         .obstacle
                         .map_or("no".to_string(), |v| v.to_string())
                 }),
@@ -81,7 +83,7 @@ pub fn option_tab() -> impl IntoView {
             div().class("column is-one-third").child(select_field(
                 setter,
                 Signal::derive(move || {
-                    if getter().radio {
+                    if getter.get().radio {
                         "yes".to_string()
                     } else {
                         "no".to_string()
@@ -95,7 +97,10 @@ pub fn option_tab() -> impl IntoView {
             div().class("column is-one-third").child(select_field(
                 setter,
                 Signal::derive(move || {
-                    getter().overlay.map_or("no".to_string(), |v| v.to_string())
+                    getter
+                        .get()
+                        .overlay
+                        .map_or("no".to_string(), |v| v.to_string())
                 }),
                 "Altitude Overlay",
                 "overlay",

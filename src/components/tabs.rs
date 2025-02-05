@@ -28,14 +28,14 @@ pub fn tabs(tab_names: Vec<&str>, children: Vec<AnyView>) -> impl IntoView {
                     .enumerate()
                     .map(|(index, tab_name)| {
                         li().class(move || {
-                            if selected() == index {
+                            if selected.get() == index {
                                 Some("is-active")
                             } else {
                                 None
                             }
                         })
                         .child(
-                            a().on(ev::click, move |_| set_selected(index))
+                            a().on(ev::click, move |_| set_selected.set(index))
                                 .child(tab_name.to_string()),
                         )
                     })
@@ -46,7 +46,7 @@ pub fn tabs(tab_names: Vec<&str>, children: Vec<AnyView>) -> impl IntoView {
             children
                 .into_iter()
                 .enumerate()
-                .map(|(index, child)| div().hidden(move || index != selected()).child(child))
+                .map(|(index, child)| div().hidden(move || index != selected.get()).child(child))
                 .collect_view(),
         ),
     )

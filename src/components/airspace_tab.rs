@@ -32,7 +32,7 @@ pub fn airspace_tab(gliding_sites: Vec<String>) -> impl IntoView {
         div().class("columns").child((
             div().class("column is-one-third").child(select_field(
                 setter,
-                Signal::derive(move || getter().atz.to_string()),
+                Signal::derive(move || getter.get().atz.to_string()),
                 "ATZ",
                 "atz",
                 &vec!["Class D", "Control Zone"],
@@ -40,7 +40,9 @@ pub fn airspace_tab(gliding_sites: Vec<String>) -> impl IntoView {
             )),
             div().class("column is-one-third").child(select_field(
                 setter,
-                Signal::derive(move || getter().ils.map_or("no".to_string(), |v| v.to_string())),
+                Signal::derive(move || {
+                    getter.get().ils.map_or("no".to_string(), |v| v.to_string())
+                }),
                 "ILS Feather",
                 "ils",
                 &vec!["As ATZ", "Class F", "Class G"],
@@ -51,7 +53,8 @@ pub fn airspace_tab(gliding_sites: Vec<String>) -> impl IntoView {
             div().class("column is-one-third").child(select_field(
                 setter,
                 Signal::derive(move || {
-                    getter()
+                    getter
+                        .get()
                         .unlicensed
                         .map_or("no".to_string(), |v| v.to_string())
                 }),
@@ -63,7 +66,8 @@ pub fn airspace_tab(gliding_sites: Vec<String>) -> impl IntoView {
             div().class("column is-one-third").child(select_field(
                 setter,
                 Signal::derive(move || {
-                    getter()
+                    getter
+                        .get()
                         .microlight
                         .map_or("no".to_string(), |v| v.to_string())
                 }),
@@ -77,7 +81,10 @@ pub fn airspace_tab(gliding_sites: Vec<String>) -> impl IntoView {
             div().class("column is-one-third").child(select_field(
                 setter,
                 Signal::derive(move || {
-                    getter().gliding.map_or("no".to_string(), |v| v.to_string())
+                    getter
+                        .get()
+                        .gliding
+                        .map_or("no".to_string(), |v| v.to_string())
                 }),
                 "Gliding Airfield",
                 "gliding",
@@ -91,7 +98,12 @@ pub fn airspace_tab(gliding_sites: Vec<String>) -> impl IntoView {
             )),
             div().class("column is-one-third").child(select_field(
                 setter,
-                Signal::derive(move || getter().home.map_or("No".to_string(), |v| v.to_string())),
+                Signal::derive(move || {
+                    getter
+                        .get()
+                        .home
+                        .map_or("No".to_string(), |v| v.to_string())
+                }),
                 "Exclude Home Airfield",
                 "home",
                 &gsites,

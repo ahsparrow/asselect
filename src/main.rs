@@ -120,7 +120,7 @@ fn MainView(yaixm: Yaixm, overlay: LocalResource<OverlayData>) -> impl IntoView 
         let oa = openair(&yaixm, &settings.get_untracked(), &user_agent);
 
         // Get overlay data
-        let od = if let Some(overlay_setting) = settings().overlay {
+        let od = if let Some(overlay_setting) = settings.get().overlay {
             if let Some(overlay_data) = overlay.get().as_deref() {
                 let x = match overlay_setting {
                     Overlay::FL195 => overlay_data.clone().overlay_195,
@@ -185,7 +185,7 @@ fn MainView(yaixm: Yaixm, overlay: LocalResource<OverlayData>) -> impl IntoView 
                     .child("Get Airspace"),
                 a().id("airac-button")
                     .class("button is-text is-pulled-right")
-                    .on(ev::click, move |_| set_modal(true))
+                    .on(ev::click, move |_| set_modal.set(true))
                     .child(format!("AIRAC: {}", airac_date)),
             )),
         ),
@@ -208,7 +208,7 @@ fn MainView(yaixm: Yaixm, overlay: LocalResource<OverlayData>) -> impl IntoView 
                     ))),
                 button()
                     .class("modal-close is-large")
-                    .on(ev::click, move |_| set_modal(false)),
+                    .on(ev::click, move |_| set_modal.set(false)),
             )),
         // For data download
         a().hidden(true).node_ref(download_node_ref),

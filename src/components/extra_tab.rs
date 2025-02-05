@@ -33,10 +33,10 @@ pub fn extra_tab(children: Vec<AnyView>, names: Vec<&str>, ids: Vec<ExtraType>) 
             div().class("card block").child((
                 header()
                     .class("card-header is-clickable")
-                    .on(ev::click, move |_| set(n))
+                    .on(ev::click, move |_| set.set(n))
                     .child((
                         p().class("card-header-title").child(name.to_string()),
-                        div().hidden(move || get() != n).child(
+                        div().hidden(move || get.get() != n).child(
                             div().class("card-header-icon").child(
                                 input()
                                     .r#type("button")
@@ -48,7 +48,7 @@ pub fn extra_tab(children: Vec<AnyView>, names: Vec<&str>, ids: Vec<ExtraType>) 
                     )),
                 div()
                     .class("card-content")
-                    .hidden(move || get() != n)
+                    .hidden(move || get.get() != n)
                     .child(cld),
             ))
         })
