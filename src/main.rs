@@ -60,7 +60,10 @@ fn app() -> impl IntoView {
 
     move || match async_yaixm.get().as_deref() {
         Some(resource) => match resource {
-            Some(yaixm) => { main_view(yaixm.clone(), async_overlay) }.into_any(),
+            Some(yaixm) => {
+                // This needs to use view! macro, otherwise reactive system breaks. Don't know why
+                view! {<MainView yaixm=yaixm.clone() overlay=async_overlay />}.into_any()
+            }
             None => p().child("Error getting airspace data").into_any(),
         },
         None => p()
@@ -69,7 +72,8 @@ fn app() -> impl IntoView {
     }
 }
 
-fn main_view(yaixm: Yaixm, overlay: LocalResource<OverlayData>) -> impl IntoView {
+#[component]
+fn MainView(yaixm: Yaixm, overlay: LocalResource<OverlayData>) -> impl IntoView {
     // Local settings storage
     let (local_settings, set_local_settings, _) =
         use_local_storage::<Settings, JsonSerdeCodec>("settings");
