@@ -26,7 +26,7 @@ pub fn extra_tab(children: Vec<AnyView>, names: Vec<&str>, ids: Vec<ExtraType>) 
 
     names
         .iter()
-        .zip(children.into_iter())
+        .zip(children)
         .zip(ids)
         .enumerate()
         .map(|(n, ((name, cld), id))| {

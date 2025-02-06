@@ -43,7 +43,7 @@ pub fn select_field(
                             })
                             .child(
                                 options
-                                    .into_iter()
+                                    .iter()
                                     .zip(values)
                                     .map(|(o, v)| {
                                         option()
