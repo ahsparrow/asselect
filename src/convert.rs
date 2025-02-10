@@ -435,6 +435,8 @@ fn poly_circle(circle: &Circle, resolution: u32) -> String {
 
     let radius = radius_to_metres(&circle.radius);
 
+    let resolution = (f64::from(resolution) * (radius / 4000.).sqrt()).round() as u32;
+
     let out = (0..(resolution + 1))
         .into_iter()
         .map(|a| {
@@ -460,6 +462,8 @@ fn poly_arc(arc: &Arc, from: &str, resolution: u32) -> String {
     let mut to_ang = Geodesic::bearing(centre, to);
 
     let radius = radius_to_metres(&arc.radius);
+
+    let resolution = (f64::from(resolution) * (radius / 4000.).sqrt()).round() as u32;
 
     if arc.dir == "cw" {
         if from_ang > to_ang {
