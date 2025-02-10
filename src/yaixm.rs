@@ -242,3 +242,38 @@ pub fn wave_names(yaixm: &Yaixm) -> Vec<String> {
         .map(|x| x.name.clone())
         .collect::<Vec<String>>()
 }
+
+// Convert lat/lon string to floating point degrees
+pub fn latlon_to_degrees(latlon: &str) -> (f64, f64) {
+    let bytes = latlon.as_bytes();
+
+    let mut deg: f64 = latlon[0..2].parse().unwrap();
+    let mut min: f64 = latlon[2..4].parse().unwrap();
+    let mut sec: f64 = latlon[4..6].parse().unwrap();
+    let mut lat = deg + min / 60.0 + sec / 3600.0;
+    if bytes[6] == b'S' {
+        lat = -lat;
+    }
+
+    deg = latlon[8..11].parse().unwrap();
+    min = latlon[11..13].parse().unwrap();
+    sec = latlon[13..15].parse().unwrap();
+    let mut lon = deg + min / 60.0 + sec / 3600.0;
+    if bytes[15] == b'W' {
+        lon = -lon;
+    }
+
+    (lat, lon)
+}
+
+// Convert radius to floating point metres
+pub fn radius_to_metres(radius: &str) -> f64 {
+    let parts = radius.split(" ").collect::<Vec<&str>>();
+    let dist: f64 = parts[0].parse().unwrap();
+
+    if parts[1] == "nm" {
+        dist * 1852.0
+    } else {
+        dist * 1000.0
+    }
+}

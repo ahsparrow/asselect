@@ -1,5 +1,5 @@
 // Copyright 2024, Alan Sparrow
-//
+//_
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or (at
@@ -15,25 +15,12 @@
 //
 use crate::settings::{AirType, Format, Settings};
 use crate::yaixm::{
-    Arc, Boundary, Circle, Feature, IcaoClass, IcaoType, Loa, LocalType, Obstacle, Rule, Service,
-    Volume, Yaixm,
+    latlon_to_degrees, radius_to_metres, Arc, Boundary, Circle, Feature, IcaoClass, IcaoType, Loa,
+    LocalType, Obstacle, Rule, Service, Volume, Yaixm,
 };
 use chrono::Utc;
+use geo::{Bearing, Destination, Geodesic, Point};
 use std::collections::{HashMap, HashSet};
-
-impl IcaoClass {
-    fn as_str(&self) -> &'static str {
-        match self {
-            IcaoClass::A => "A",
-            IcaoClass::B => "B",
-            IcaoClass::C => "C",
-            IcaoClass::D => "D",
-            IcaoClass::E => "E",
-            IcaoClass::F => "F",
-            IcaoClass::G => "G",
-        }
-    }
-}
 
 impl LocalType {
     fn as_str(&self) -> &'static str {
@@ -117,6 +104,28 @@ fn format_level(level: &str) -> String {
     }
 }
 
+fn resolution(airtype: AirType) -> u32 {
+    match airtype {
+        AirType::ClassA => 72,
+        AirType::ClassB => 72,
+        AirType::ClassC => 72,
+        AirType::ClassD => 72,
+        AirType::ClassE => 72,
+        AirType::ClassF => 72,
+        AirType::ClassG => 72,
+        AirType::Prohibited => 72,
+        AirType::Danger => 72,
+        AirType::Restricted => 72,
+        AirType::Gliding => 36,
+        AirType::Cta => 72,
+        AirType::Ctr => 72,
+        AirType::Matz => 36,
+        AirType::Other => 36,
+        AirType::Rmz => 72,
+        AirType::Tmz => 72,
+    }
+}
+
 // Openair lat/lon format
 fn format_latlon(latlon: &str) -> String {
     format!(
@@ -145,6 +154,95 @@ fn format_distance(distance: &str) -> String {
         _ => "".to_string(),
     }
 }
+
+// Give each volume a type
+fn airtype(feature: &Feature, volume: &Volume, settings: &Settings) -> AirType {
+    let rules = feature
+        .rules
+        .iter()
+        .chain(volume.rules.iter())
+        .flatten()
+        .collect::<HashSet<&Rule>>();
+
+    let comp = settings.format == Format::Competition;
+
+    if rules.contains(&Rule::Notam) {
+        // NOTAM activated airspace
+        AirType::ClassG
+    } else {
+        match feature.icao_type {
+            IcaoType::Atz => settings.atz,
+            IcaoType::D => {
+                if comp && rules.contains(&Rule::Si) {
+                    // Danger area with SI
+                    AirType::Prohibited
+                } else {
+                    // Danger area without SI
+                    AirType::Danger
+                }
+            }
+            IcaoType::DOther => {
+                if comp
+                    && feature.local_type == Some(LocalType::Dz)
+                    && rules.contains(&Rule::Intense)
+                {
+                    // Intense drop zone - competition
+                    AirType::Prohibited
+                } else {
+                    match feature.local_type {
+                        Some(LocalType::Hirta) | Some(LocalType::Gvs) | Some(LocalType::Laser) => {
+                            settings.hirta_gvs.unwrap_or(AirType::Other)
+                        }
+                        Some(LocalType::Glider) => AirType::Gliding,
+                        Some(LocalType::Obstacle) => settings.obstacle.unwrap_or(AirType::Other),
+                        _ => AirType::Danger,
+                    }
+                }
+            }
+            IcaoType::Other => match feature.local_type {
+                Some(LocalType::Glider) => {
+                    if rules.contains(&Rule::Loa) {
+                        AirType::Gliding
+                    } else {
+                        settings.gliding.unwrap_or(AirType::Other)
+                    }
+                }
+                Some(LocalType::Ils) => settings.ils.unwrap_or(settings.atz),
+                Some(LocalType::Matz) => AirType::Matz,
+                Some(LocalType::NoAtz) => settings.unlicensed.unwrap_or(AirType::Other),
+                Some(LocalType::Rat) => AirType::Prohibited,
+                Some(LocalType::Tmz) => AirType::Tmz,
+                Some(LocalType::Ul) => settings.microlight.unwrap_or(AirType::Other),
+                Some(LocalType::Rmz) => AirType::Rmz,
+                _ => AirType::Other,
+            },
+            IcaoType::P => AirType::Prohibited,
+            IcaoType::R => AirType::Restricted,
+            _ => {
+                if rules.contains(&Rule::Tmz) {
+                    AirType::Tmz
+                } else if rules.contains(&Rule::Rmz) {
+                    AirType::Rmz
+                } else {
+                    match volume
+                        .icao_class
+                        .or(feature.icao_class)
+                        .unwrap_or(IcaoClass::G)
+                    {
+                        IcaoClass::A => AirType::ClassA,
+                        IcaoClass::B => AirType::ClassB,
+                        IcaoClass::C => AirType::ClassC,
+                        IcaoClass::D => AirType::ClassD,
+                        IcaoClass::E => AirType::ClassE,
+                        IcaoClass::F => AirType::ClassF,
+                        IcaoClass::G => AirType::ClassG,
+                    }
+                }
+            }
+        }
+    }
+}
+
 // Remove unwanted feature/volume
 fn airfilter(feature: &Feature, vol: &Volume, settings: &Settings) -> bool {
     let exclude = match feature.local_type {
@@ -249,88 +347,8 @@ fn do_name(feature: &Feature, vol: &Volume, n: usize, settings: &Settings) -> St
     format!("AN {}\n", name)
 }
 
-// Give each volume a type
-fn do_type(feature: &Feature, volume: &Volume, settings: &Settings) -> String {
-    let rules = feature
-        .rules
-        .iter()
-        .chain(volume.rules.iter())
-        .flatten()
-        .collect::<HashSet<&Rule>>();
-
-    let comp = settings.format == Format::Competition;
-
-    let openair_type = if rules.contains(&Rule::Notam) {
-        // NOTAM activated airspace
-        "G"
-    } else {
-        match feature.icao_type {
-            IcaoType::Atz => settings.atz.as_str(),
-            IcaoType::D => {
-                if comp && rules.contains(&Rule::Si) {
-                    // Danger area with SI
-                    "P"
-                } else {
-                    // Danger area without SI
-                    "Q"
-                }
-            }
-            IcaoType::DOther => {
-                if comp
-                    && feature.local_type == Some(LocalType::Dz)
-                    && rules.contains(&Rule::Intense)
-                {
-                    // Intense drop zone - competition
-                    "P"
-                } else {
-                    match feature.local_type {
-                        Some(LocalType::Hirta) | Some(LocalType::Gvs) | Some(LocalType::Laser) => {
-                            settings.hirta_gvs.unwrap_or(AirType::Other).as_str()
-                        }
-                        Some(LocalType::Glider) => "W",
-                        Some(LocalType::Obstacle) => {
-                            settings.obstacle.unwrap_or(AirType::Other).as_str()
-                        }
-                        _ => "Q",
-                    }
-                }
-            }
-            IcaoType::Other => match feature.local_type {
-                Some(LocalType::Glider) => {
-                    if rules.contains(&Rule::Loa) {
-                        "W"
-                    } else {
-                        settings.gliding.unwrap_or(AirType::Other).as_str()
-                    }
-                }
-                Some(LocalType::Ils) => settings.ils.unwrap_or(settings.atz).as_str(),
-                Some(LocalType::Matz) => "MATZ",
-                Some(LocalType::NoAtz) => settings.unlicensed.unwrap_or(AirType::Other).as_str(),
-                Some(LocalType::Rat) => "P",
-                Some(LocalType::Tmz) => "TMZ",
-                Some(LocalType::Ul) => settings.microlight.unwrap_or(AirType::Other).as_str(),
-                Some(LocalType::Rmz) => "RMZ",
-                _ => "OTHER",
-            },
-            IcaoType::P => "P",
-            IcaoType::R => "R",
-            _ => {
-                if rules.contains(&Rule::Tmz) {
-                    "TMZ"
-                } else if rules.contains(&Rule::Rmz) {
-                    "RMZ"
-                } else {
-                    volume
-                        .icao_class
-                        .or(feature.icao_class)
-                        .unwrap_or(IcaoClass::G)
-                        .as_str()
-                }
-            }
-        }
-    };
-
-    format!("AC {}\n", openair_type)
+fn do_type(airtype: AirType) -> String {
+    format!("AC {}\n", airtype.as_str())
 }
 
 fn do_levels(volume: &Volume) -> String {
@@ -356,27 +374,34 @@ fn do_line(line: &[String]) -> String {
         .join("")
 }
 
-fn do_circle(circle: &Circle) -> String {
-    format!(
-        "V X={}\nDC {}\n",
-        format_latlon(&circle.centre),
-        format_distance(&circle.radius)
-    )
+fn do_circle(circle: &Circle, resolution: Option<u32>) -> String {
+    match resolution {
+        None => format!(
+            "V X={}\nDC {}\n",
+            format_latlon(&circle.centre),
+            format_distance(&circle.radius),
+        ),
+        Some(res) => poly_circle(circle, res),
+    }
 }
 
-fn do_arc(arc: &Arc, from: &str) -> String {
-    let dir = if arc.dir == "cw" { "+" } else { "-" };
-
-    format!(
-        "V D={}\nV X={}\nDB {}, {}\n",
-        dir,
-        format_latlon(&arc.centre),
-        format_latlon(from),
-        format_latlon(&arc.to)
-    )
+fn do_arc(arc: &Arc, from: &str, resolution: Option<u32>) -> String {
+    match resolution {
+        None => {
+            let dir = if arc.dir == "cw" { "+" } else { "-" };
+            format!(
+                "V D={}\nV X={}\nDB {}, {}\n",
+                dir,
+                format_latlon(&arc.centre),
+                format_latlon(from),
+                format_latlon(&arc.to)
+            )
+        }
+        Some(res) => poly_arc(arc, from, res),
+    }
 }
 
-fn do_boundary(boundary: &[Boundary]) -> String {
+fn do_boundary(boundary: &[Boundary], resolution: Option<u32>) -> String {
     let mut out = String::new();
     let mut prev = "";
 
@@ -387,10 +412,10 @@ fn do_boundary(boundary: &[Boundary]) -> String {
                 prev = line.last().unwrap();
             }
             Boundary::Arc(arc) => {
-                out.push_str(&do_arc(arc, prev));
+                out.push_str(&do_arc(arc, prev, resolution));
                 prev = &arc.to;
             }
-            Boundary::Circle(circle) => out.push_str(&do_circle(circle)),
+            Boundary::Circle(circle) => out.push_str(&do_circle(circle, resolution)),
         }
     }
 
@@ -402,6 +427,97 @@ fn do_boundary(boundary: &[Boundary]) -> String {
     }
 
     out
+}
+
+fn poly_circle(circle: &Circle, resolution: u32) -> String {
+    let (clat, clon) = latlon_to_degrees(&circle.centre);
+    let centre = Point::new(clon, clat);
+
+    let radius = radius_to_metres(&circle.radius);
+
+    let out = (0..(resolution + 1))
+        .into_iter()
+        .map(|a| {
+            let ang = f64::from(a * 360) / f64::from(resolution);
+            let dest = Geodesic::destination(centre, ang, radius);
+            degrees_to_point(dest.y(), dest.x())
+        })
+        .collect();
+    out
+}
+
+fn poly_arc(arc: &Arc, from: &str, resolution: u32) -> String {
+    let (clat, clon) = latlon_to_degrees(&arc.centre);
+    let centre = Point::new(clon, clat);
+
+    let (from_lat, from_lon) = latlon_to_degrees(from);
+    let from = Point::new(from_lon, from_lat);
+
+    let (to_lat, to_lon) = latlon_to_degrees(&arc.to);
+    let to = Point::new(to_lon, to_lat);
+
+    let mut from_ang = Geodesic::bearing(centre, from);
+    let mut to_ang = Geodesic::bearing(centre, to);
+
+    let radius = radius_to_metres(&arc.radius);
+
+    if arc.dir == "cw" {
+        if from_ang > to_ang {
+            to_ang += 360.;
+        }
+    } else {
+        if from_ang < to_ang {
+            from_ang += 360.;
+        }
+    }
+
+    let mut ang_array = (0..(resolution * 2) + 1)
+        .into_iter()
+        .map(|a| f64::from(a * 360) / f64::from(resolution))
+        .filter(|a| {
+            f64::from(*a) > (from_ang.min(to_ang) + 0.5)
+                && f64::from(*a) < (from_ang.max(to_ang) - 0.5)
+        })
+        .collect::<Vec<f64>>();
+
+    if arc.dir == "ccw" {
+        ang_array.reverse();
+    }
+
+    let mut out = ang_array
+        .into_iter()
+        .map(|a| {
+            let dest = Geodesic::destination(centre, a, radius);
+            degrees_to_point(dest.y(), dest.x())
+        })
+        .collect::<String>();
+
+    out.push_str(&degrees_to_point(to_lat, to_lon));
+
+    out
+}
+
+fn degrees_to_dms(degrees: f64) -> (u32, u32, u32) {
+    let mut sec = (degrees * 3600.0).round() as u32;
+    let mut min = sec / 60;
+    sec = sec % 60;
+    let deg = min / 60;
+    min = min % 60;
+
+    (deg, min, sec)
+}
+
+fn degrees_to_point(lat: f64, lon: f64) -> String {
+    let lat_ns = if lat >= 0.0 { "N" } else { "S" };
+    let lon_ew = if lon >= 0.0 { "E" } else { "W" };
+
+    let (lat_deg, lat_min, lat_sec) = degrees_to_dms(lat.abs());
+    let (lon_deg, lon_min, lon_sec) = degrees_to_dms(lon.abs());
+
+    format!(
+        "DP {:02}:{:02}:{:02} {} {:03}:{:02}:{:02} {}\n",
+        lat_deg, lat_min, lat_sec, lat_ns, lon_deg, lon_min, lon_sec, lon_ew
+    )
 }
 
 // Merge radio frequency data
@@ -607,15 +723,21 @@ pub fn openair(yaixm: &Yaixm, settings: &Settings, user_agent: &str) -> String {
     );
     for feature in airspace {
         for (n, volume) in feature.geometry.iter().enumerate() {
+            let atype = airtype(&feature, &volume, &settings);
+            let res = if settings.format == Format::Competition {
+                Some(resolution(atype))
+            } else {
+                None
+            };
             if airfilter(&feature, volume, settings) {
                 output.push_str("*\n");
-                output.push_str(&do_type(&feature, volume, settings));
+                output.push_str(&do_type(atype));
                 output.push_str(&do_name(&feature, volume, n, settings));
                 if let Some(freq) = volume.frequency {
                     output.push_str(&do_freq(freq));
                 }
                 output.push_str(&do_levels(volume));
-                output.push_str(&do_boundary(&volume.boundary));
+                output.push_str(&do_boundary(&volume.boundary, res));
             }
         }
     }
