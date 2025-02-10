@@ -112,7 +112,7 @@ fn resolution(airtype: AirType) -> u32 {
         AirType::ClassD => 72,
         AirType::ClassE => 72,
         AirType::ClassF => 72,
-        AirType::ClassG => 72,
+        AirType::ClassG => 36,
         AirType::Prohibited => 72,
         AirType::Danger => 72,
         AirType::Restricted => 72,
