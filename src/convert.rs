@@ -77,7 +77,7 @@ impl AirType {
             AirType::Matz => "MATZ",
             AirType::Other => "OTHER",
             AirType::Rmz => "RMZ",
-            AirType::Tmz => "RMZ",
+            AirType::Tmz => "TMZ",
         }
     }
 }
