@@ -164,13 +164,17 @@ fn MainView(yaixm: Yaixm, overlay: LocalResource<OverlayData>) -> impl IntoView 
 
     (
         // Page header
-        header().class("hero is-small is-primary block").child(
-            div().class("hero-body").child(
-                div()
-                    .class("container")
-                    .child(div().class("title is-4").child("ASSelect - UK Airspace")),
+        header()
+            .class("hero is-small has-background-primary-soft block")
+            .child(
+                div().class("hero-body").child(
+                    div().class("container").child(
+                        div()
+                            .class("title has-text-primary-bold is-4")
+                            .child("ASSelect - UK Airspace"),
+                    ),
+                ),
             ),
-        ),
         // Tabs
         div()
             .class("container block")
@@ -180,7 +184,7 @@ fn MainView(yaixm: Yaixm, overlay: LocalResource<OverlayData>) -> impl IntoView 
             div().class("mx-4").child((
                 button()
                     .r#type("submit")
-                    .class("button is-primary")
+                    .class("button has-background-primary-soft")
                     .on(ev::click, download)
                     .child("Get Airspace"),
                 a().id("airac-button")
