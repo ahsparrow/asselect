@@ -98,6 +98,7 @@ fn MainView(yaixm: Yaixm, overlay: LocalResource<OverlayData>) -> impl IntoView 
 
     let airac_date = yaixm.release.airac_date[..10].to_string();
     let release_note = yaixm.release.note.clone();
+    let filename = format!("uk{}.txt", airac_date);
 
     // UI static data
     let tab_names = vec!["Main", "Option", "Extra", "NOTAM", "About"];
@@ -140,7 +141,7 @@ fn MainView(yaixm: Yaixm, overlay: LocalResource<OverlayData>) -> impl IntoView 
         let object_url = ObjectUrl::from(blob);
 
         let a = download_node_ref.get().unwrap();
-        a.set_download("openair.txt");
+        a.set_download(&filename);
         a.set_href(&object_url);
         a.click();
     };
