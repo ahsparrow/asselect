@@ -8,3 +8,6 @@ command_arguments = [
   "-c",
   "mkdir $TRUNK_STAGING_DIR/default; cp data/openair.txt $TRUNK_STAGING_DIR/default",
 ]
+
+[tools]
+sass = "1.83.4"
