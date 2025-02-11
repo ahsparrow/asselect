@@ -14,7 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 //
 use leptos::ev;
-use leptos::html::{div, input, label};
+use leptos::html::{div, input, label, p};
 use leptos::prelude::*;
 
 use crate::settings::{ExtraType, Settings};
@@ -23,31 +23,42 @@ pub fn extra_panel(names: Vec<String>, id: ExtraType) -> impl IntoView {
     let setter = use_context::<WriteSignal<Settings>>().expect("to find setter");
     let getter = use_context::<ReadSignal<Settings>>().expect("to find getter");
 
-    div().class("columns is-multiline").child(
-        names
-            .into_iter()
-            .map(|n| {
-                let nc1 = n.clone();
-                let nc2 = n.clone();
-                div().class("column is-one-third").child(
-                    div().class("field").child(
-                        label().class("checkbox").child((
-                            input()
-                                .r#type("checkbox")
-                                .class("mr-2")
-                                .prop("checked", move || {
-                                    getter.with(|s| s.get_extra(id).contains(&nc1))
-                                })
-                                .on(ev::input, move |ev| {
-                                    setter.update(|s| {
-                                        s.set_extra(id, nc2.clone(), event_target_checked(&ev))
-                                    })
-                                }),
-                            n,
-                        )),
-                    ),
-                )
-            })
-            .collect_view(),
-    )
+    if names.len() > 0 {
+        div()
+            .class("columns is-multiline")
+            .child(
+                names
+                    .into_iter()
+                    .map(|n| {
+                        let nc1 = n.clone();
+                        let nc2 = n.clone();
+                        div().class("column is-one-third").child(
+                            div().class("field").child(
+                                label().class("checkbox").child((
+                                    input()
+                                        .r#type("checkbox")
+                                        .class("mr-2")
+                                        .prop("checked", move || {
+                                            getter.with(|s| s.get_extra(id).contains(&nc1))
+                                        })
+                                        .on(ev::input, move |ev| {
+                                            setter.update(|s| {
+                                                s.set_extra(
+                                                    id,
+                                                    nc2.clone(),
+                                                    event_target_checked(&ev),
+                                                )
+                                            })
+                                        }),
+                                    n,
+                                )),
+                            ),
+                        )
+                    })
+                    .collect_view(),
+            )
+            .into_any()
+    } else {
+        p().child("No current restictions").into_any()
+    }
 }
