@@ -93,6 +93,15 @@ fn MainView(yaixm: Yaixm, overlay: LocalResource<OverlayData>) -> impl IntoView 
     loa_names.sort();
     wave_names.sort();
 
+    // Clean old RATs from settings
+    for rat_name in settings.get().rat {
+        if !rat_names.contains(&rat_name) {
+            set_local_settings.update(|s| {
+                s.rat.remove(&rat_name);
+            });
+        }
+    }
+
     let mut gliding_sites = gliding_sites(&yaixm);
     gliding_sites.sort();
 
