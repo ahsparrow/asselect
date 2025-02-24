@@ -16,6 +16,20 @@ Follow the instructions from the [Rust website](https://www.rust-lang.org/tools/
 
 ## Deployment
 
+First create a new branch for GitHub pages
+
+```shell
+git checkout --orphan gh-pages
+git rm -rf .
+cat > .gitattributes
+openair.txt eol=crlf
+<ctrl-D>
+git add .gitattributes
+git commit -m "New branch"
+git push -u origin gh-pages
+git checkout main
+```
+
 ### Copy new airspace files
 
 Copy the airspace files `yaixm.json`, `openair.txt`, `overlay_105.txt`,
