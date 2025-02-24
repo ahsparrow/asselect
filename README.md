@@ -27,8 +27,9 @@ openair.txt eol=crlf
 git add .gitattributes
 git commit -m "New branch"
 git push -u origin gh-pages
-git checkout main
 ```
+
+Then (after build step below) copy files from dist directory and add them to git
 
 ### Copy new airspace files
 
