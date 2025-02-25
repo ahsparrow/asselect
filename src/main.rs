@@ -178,11 +178,9 @@ fn MainView(yaixm: Yaixm, overlay: LocalResource<OverlayData>) -> impl IntoView 
             .class("hero is-small has-background-primary-soft block")
             .child(
                 div().class("hero-body").child(
-                    div().class("container").child(
-                        div()
-                            .class("title has-text-primary-bold is-4")
-                            .child("ASSelect - UK Airspace"),
-                    ),
+                    div()
+                        .class("container")
+                        .child(div().class("title is-4").child("ASSelect - UK Airspace")),
                 ),
             ),
         // Tabs
