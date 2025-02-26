@@ -43,11 +43,7 @@ pub fn extra_panel(names: Vec<String>, id: ExtraType) -> impl IntoView {
                                         })
                                         .on(ev::input, move |ev| {
                                             setter.update(|s| {
-                                                s.set_extra(
-                                                    id,
-                                                    nc2.clone(),
-                                                    event_target_checked(&ev),
-                                                )
+                                                s.set_extra(id, &nc2, event_target_checked(&ev))
                                             })
                                         }),
                                     n,
