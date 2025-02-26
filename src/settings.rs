@@ -133,7 +133,7 @@ impl Settings {
         }
     }
 
-    pub fn set_extra(&mut self, id: ExtraType, value: String, add: bool) {
+    pub fn set_extra(&mut self, id: ExtraType, value: &str, add: bool) {
         let x = match id {
             ExtraType::Rat => &mut self.rat,
             ExtraType::Loa => &mut self.loa,
@@ -141,9 +141,9 @@ impl Settings {
         };
 
         if add {
-            x.insert(value);
+            x.insert(value.to_string());
         } else {
-            x.remove(&value);
+            x.remove(value);
         }
     }
 
