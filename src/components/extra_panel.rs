@@ -55,6 +55,6 @@ pub fn extra_panel(names: Vec<String>, id: ExtraType) -> impl IntoView {
             )
             .into_any()
     } else {
-        p().child("No current restictions").into_any()
+        p().child("No temporary restrictions").into_any()
     }
 }
