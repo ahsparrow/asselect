@@ -127,15 +127,20 @@ fn MainView(yaixm: Yaixm, overlay: LocalResource<OverlayData>) -> impl IntoView 
             .unwrap_or_default();
 
         // Create OpenAir data
-        let oa = openair(&yaixm, &settings.get_untracked(), &user_agent);
+        let oa = if settings.get().overlay != Some(Overlay::AtzDzOnly) {
+            openair(&yaixm, &settings.get_untracked(), &user_agent)
+        } else {
+            // Overlay only, no airspace
+            "".to_string()
+        };
 
         // Get overlay data
         let od = if let Some(overlay_setting) = settings.get().overlay {
             if let Some(overlay_data) = overlay.get().as_deref() {
                 let x = match overlay_setting {
-                    Overlay::FL195 => overlay_data.clone().overlay_195,
-                    Overlay::FL105 => overlay_data.clone().overlay_105,
-                    Overlay::AtzDz => overlay_data.clone().overlay_atzdz,
+                    Overlay::FL195 => overlay_data.overlay_195.clone(),
+                    Overlay::FL105 => overlay_data.overlay_105.clone(),
+                    Overlay::AtzDz | Overlay::AtzDzOnly => overlay_data.overlay_atzdz.clone(),
                 };
                 x.unwrap_or("* Missing overlay data".to_string())
             } else {

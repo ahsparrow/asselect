@@ -54,6 +54,7 @@ pub enum Overlay {
     FL195,
     FL105,
     AtzDz,
+    AtzDzOnly,
 }
 
 // Settings
