@@ -59,8 +59,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "asselect_leptos"
-version = "0.1.0"
+name = "asselect"
+version = "1.0.0"
 dependencies = [
  "chrono",
  "codee",
