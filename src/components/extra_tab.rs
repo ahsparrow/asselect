@@ -40,7 +40,7 @@ pub fn extra_tab(children: Vec<AnyView>, names: Vec<&str>, ids: Vec<ExtraType>) 
                             div().class("card-header-icon").child(
                                 input()
                                     .r#type("button")
-                                    .class("button is-info is-light is-small ml-2")
+                                    .class("button is-info is-soft is-small ml-2")
                                     .value("Clear")
                                     .on(ev::click, move |_| setter.update(|s| s.clear_extra(id))),
                             ),

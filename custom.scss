@@ -1,8 +1,9 @@
-$blue: rgb(32, 64, 255);
+$blue: hsl(201, 78%, 50%);
 
 @forward "bulma/utilities" with (
   $family-primary: "Roboto, sans-serif",
-  $primary: $blue
+  $primary: $blue,
+  $link: $blue,
 );
 
 @use "bulma/components/card" with (
