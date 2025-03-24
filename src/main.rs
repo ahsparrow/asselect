@@ -153,9 +153,14 @@ fn MainView(yaixm: Yaixm, overlay: LocalResource<OverlayData>) -> impl IntoView 
         // Create download data
         let blob = Blob::new((oa + od.as_str()).as_str());
         let object_url = ObjectUrl::from(blob);
+        let fname = if settings.get().overlay == Some(Overlay::AtzDzOnly) {
+            "overlay.txt"
+        } else {
+            &filename
+        };
 
         let a = download_node_ref.get().unwrap();
-        a.set_download(&filename);
+        a.set_download(fname);
         a.set_href(&object_url);
         a.click();
     };
