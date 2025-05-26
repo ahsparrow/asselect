@@ -374,15 +374,12 @@ fn do_line(line: &[String]) -> String {
         .join("")
 }
 
-fn do_circle(circle: &Circle, resolution: Option<u32>) -> String {
-    match resolution {
-        None => format!(
-            "V X={}\nDC {}\n",
-            format_latlon(&circle.centre),
-            format_distance(&circle.radius),
-        ),
-        Some(res) => poly_circle(circle, res),
-    }
+fn do_circle(circle: &Circle) -> String {
+    format!(
+        "V X={}\nDC {}\n",
+        format_latlon(&circle.centre),
+        format_distance(&circle.radius),
+    )
 }
 
 fn do_arc(arc: &Arc, from: &str, resolution: Option<u32>) -> String {
@@ -415,7 +412,7 @@ fn do_boundary(boundary: &[Boundary], resolution: Option<u32>) -> String {
                 out.push_str(&do_arc(arc, prev, resolution));
                 prev = &arc.to;
             }
-            Boundary::Circle(circle) => out.push_str(&do_circle(circle, resolution)),
+            Boundary::Circle(circle) => out.push_str(&do_circle(circle)),
         }
     }
 
@@ -426,25 +423,6 @@ fn do_boundary(boundary: &[Boundary], resolution: Option<u32>) -> String {
         }
     }
 
-    out
-}
-
-fn poly_circle(circle: &Circle, resolution: u32) -> String {
-    let (clat, clon) = latlon_to_degrees(&circle.centre);
-    let centre = Point::new(clon, clat);
-
-    let radius = radius_to_metres(&circle.radius);
-
-    let resolution = (f64::from(resolution) * (radius / 4000.).sqrt()).round() as u32;
-
-    let out = (0..(resolution + 1))
-        .into_iter()
-        .map(|a| {
-            let ang = f64::from(a * 360) / f64::from(resolution);
-            let dest = Geodesic::destination(centre, ang, radius);
-            degrees_to_point(dest.y(), dest.x())
-        })
-        .collect();
     out
 }
 
