@@ -7,7 +7,7 @@
 *
 * AIRAC: 2025-06-12
 * asselect.uk: Default airspace file
-* Commit: 5719d2e95c3919fc7051d27deec786ce72712d4e
+* Commit: 0165c38e9457af0b7fe6dd474f18921de9d41f84
 *
 AC D
 AN ABERDEEN CTA 119.055
