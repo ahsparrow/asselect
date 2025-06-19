@@ -5,9 +5,9 @@
 * copyright and related or neighbouring rights to this file. The data
 * is sourced from the UK Aeronautical Information Package (AIP)
 *
-* AIRAC: 2025-06-12
+* AIRAC: 2025-07-10
 * asselect.uk: Default airspace file
-* Commit: 621e34b851008eba5f02e50d7e2a18673fbc27de
+* Commit: a5d684b63c125172d97e730e5fca4c725ca84442
 *
 AC D
 AN ABERDEEN CTA 119.055
@@ -4248,8 +4248,8 @@ V X=51:41:01 N 001:47:24 W
 DC 2.5
 *
 AC CTR
-AN HALTON ATZ 130.425
-AF 130.425
+AN HALTON ATZ 130.430
+AF 130.430
 AL SFC
 AH 2366 ft
 V X=51:47:32 N 000:44:11 W
