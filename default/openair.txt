@@ -5,9 +5,9 @@
 * copyright and related or neighbouring rights to this file. The data
 * is sourced from the UK Aeronautical Information Package (AIP)
 *
-* AIRAC: 2025-10-02
+* AIRAC: 2025-10-30
 * asselect.uk: Default airspace file
-* Commit: 0c1ad72b86daf490d061dd01f34fd6385121a8e4
+* Commit: e7fe8c75f1eb24d41f0832db14aae77552cd0636
 *
 AC D
 AN ABERDEEN CTA 119.055
@@ -5861,13 +5861,6 @@ AH 2400 ft
 V X=52:09:02 N 001:26:56 W
 DC 0.4
 *
-AC G
-AN D215 NORTH LUFFENHAM (NOTAM)
-AL SFC
-AH 2400 ft
-V X=52:37:54 N 000:35:57 W
-DC 0.34
-*
 AC Q
 AN D216 CREDENHILL
 AL SFC
@@ -7350,14 +7343,6 @@ AF 123.815
 AL SFC
 AH 2065 ft
 V X=53:56:51 N 001:11:16 W
-DC 1
-*
-AC W
-AN COSFORD 135.875
-AF 135.875
-AL SFC
-AH 3272 ft
-V X=52:38:24 N 002:18:20 W
 DC 1
 *
 AC W
