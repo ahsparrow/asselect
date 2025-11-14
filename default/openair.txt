@@ -5,9 +5,9 @@
 * copyright and related or neighbouring rights to this file. The data
 * is sourced from the UK Aeronautical Information Package (AIP)
 *
-* AIRAC: 2025-10-30
+* AIRAC: 2025-11-27
 * asselect.uk: Default airspace file
-* Commit: e7fe8c75f1eb24d41f0832db14aae77552cd0636
+* Commit: 2fbb1f732ebb8e26beabec947974af7a8401c1e2
 *
 AC D
 AN ABERDEEN CTA 119.055
@@ -1154,7 +1154,8 @@ DP 53:11:39 N 001:22:06 W
 DP 52:11:26 N 000:22:20 W
 DP 52:10:02 N 000:24:27 W
 DP 52:11:18 N 000:33:23 W
-DP 52:34:06 N 001:12:24 W
+DP 52:32:03 N 001:08:51 W
+DP 52:31:41 N 001:10:54 W
 DP 53:05:17 N 001:31:52 W
 DP 53:11:43 N 001:31:42 W
 DP 53:19:30 N 001:31:31 W
@@ -1164,12 +1165,13 @@ AC A
 AN DAVENTRY CTA
 AL FL75
 AH FL195
-DP 52:34:06 N 001:12:24 W
+DP 52:32:03 N 001:08:51 W
 DP 52:11:18 N 000:33:23 W
 DP 52:10:02 N 000:24:27 W
 DP 52:03:16 N 000:34:41 W
 DP 52:14:03 N 001:00:09 W
-DP 52:34:06 N 001:12:24 W
+DP 52:31:41 N 001:10:54 W
+DP 52:32:03 N 001:08:51 W
 *
 AC A
 AN DAVENTRY CTA
