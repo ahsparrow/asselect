@@ -5,9 +5,9 @@
 * copyright and related or neighbouring rights to this file. The data
 * is sourced from the UK Aeronautical Information Package (AIP)
 *
-* AIRAC: 2025-11-27
+* AIRAC: 2025-12-25
 * asselect.uk: Default airspace file
-* Commit: 0b735e2419d492db6b532787ca64c1f61db9ab7c
+* Commit: b019cb4fcb13073e6ce81047348adc95b7f5cea3
 *
 AC D
 AN ABERDEEN CTA 119.055
@@ -6452,15 +6452,15 @@ AC R
 AN R219 SANDRINGHAM HOUSE
 AL SFC
 AH 2150 ft
-DP 52:48:19 N 000:31:04 E
+DP 52:48:10 N 000:29:01 E
 V D=+
-V X=52:49:48 N 000:30:49 E
-DB 52:48:19 N 000:31:04 E, 52:51:17 N 000:30:33 E
+V X=52:49:39 N 000:28:40 E
+DB 52:48:10 N 000:29:01 E, 52:51:08 N 000:28:19 E
 DP 52:51:32 N 000:34:24 E
 V D=-
 V X=52:50:03 N 000:34:47 E
 DB 52:51:32 N 000:34:24 E, 52:48:34 N 000:35:10 E
-DP 52:48:19 N 000:31:04 E
+DP 52:48:10 N 000:29:01 E
 *
 AC R
 AN R220 ANMER HALL
@@ -8627,7 +8627,7 @@ AC CTR
 AN OLD BUCKENHAM ATZ 124.405
 AF 124.405
 AL SFC
-AH 2194 ft
+AH 2195 ft
 V X=52:29:51 N 001:03:07 E
 DC 2
 *
