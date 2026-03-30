@@ -5,9 +5,9 @@
 * copyright and related or neighbouring rights to this file. The data
 * is sourced from the UK Aeronautical Information Package (AIP)
 *
-* AIRAC: 2026-03-19
+* AIRAC: 2026-04-16
 * asselect.uk: Default airspace file
-* Commit: d4728781e245cca19fcc9fd2ce588a635edb2218
+* Commit: 060f919f98e8dfa2c5a8eaa6f77243880a5bce09
 *
 AC D
 AN ABERDEEN CTA 119.055
@@ -7228,14 +7228,6 @@ V X=51:18:50 N 002:06:43 W
 DC 1
 *
 AC W
-AN KIRTON-IN-LINDSEY 129.980
-AF 129.980
-AL SFC
-AH 2203 ft
-V X=53:27:45 N 000:34:36 W
-DC 1
-*
-AC W
 AN LASHAM 131.030
 AF 131.030
 AL SFC
@@ -8213,7 +8205,7 @@ AC CTR
 AN EARLS COLNE ATZ 122.430
 AF 122.430
 AL SFC
-AH 2227 ft
+AH 2229 ft
 V X=51:54:52 N 000:40:57 E
 DC 2
 *
