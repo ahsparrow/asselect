@@ -7,7 +7,7 @@
 *
 * AIRAC: 2026-05-14
 * asselect.uk: Default airspace file
-* Commit: 7ef449148a56359be9521cefe41a104a9a16f404
+* Commit: changed
 *
 AC D
 AN ABERDEEN CTA 119.055
@@ -7087,7 +7087,7 @@ AC W
 AN COLERNE
 AL SFC
 AH 3591 ft
-V X=51:26:31 N 002:17:01 W
+V X=51:26:20 N 002:17:13 W
 DC 1
 *
 AC W
