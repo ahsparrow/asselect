@@ -1,0 +1,17 @@
+{
+  "name": "asselect",
+  "compatibility_date": "2026-06-04",
+
+  "assets": {
+    "directory": "./dist"
+   },
+
+  "env": {
+    "production": {},
+    "staging": {
+      "routes": [
+        { "pattern": "staging.asselect.uk", "custom_domain": true } 
+      ]
+    }
+  }
+}

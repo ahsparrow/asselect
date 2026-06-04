@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "wrangler": "^4.98.0"
+  },
+
+  "scripts": {
+    "deploy": "wrangler deploy --env production",
+    "stage": "wrangler deploy --env staging"
+  }
+}
