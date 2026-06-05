@@ -5,7 +5,7 @@
 * copyright and related or neighbouring rights to this file. The data
 * is sourced from the UK Aeronautical Information Package (AIP)
 *
-* AIRAC: 2026-05-14
+* AIRAC: 2026-06-11
 * asselect.uk: Default airspace file
 * Commit: 328216dec9912e29b2f3481d9bda51398f933cc0
 *
