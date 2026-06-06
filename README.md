@@ -42,6 +42,6 @@ Copy the airspace files `yaixm.json`, `openair.txt`, `overlay_105.txt`,
 
 `trunk build --release`
 
-### Deploy to GitHub pages
+### Deploy to Cloudflare worker
 
-`./deploy.sh`
+`npm run deploy`
