@@ -4,7 +4,7 @@
   },
 
   "scripts": {
-    "deploy": "wrangler deploy --env production",
+    "deploy": "wrangler deploy --env \"\"",
     "stage": "wrangler deploy --env staging"
   }
 }

@@ -6,15 +6,24 @@
     "directory": "./dist"
    },
 
-  "env": {
-    "production": {
-      "routes": [
-        { "pattern": "asselect.uk", "custom_domain": true }
-      ]
+  "routes": [
+    {
+      "pattern": "asselect.uk",
+      "custom_domain": true
     },
+    {
+      "pattern": "www.asselect.uk",
+      "custom_domain": true,
+    }
+  ],
+
+  "env": {
     "staging": {
       "routes": [
-        { "pattern": "staging.asselect.uk", "custom_domain": true } 
+        {
+          "pattern": "staging.asselect.uk",
+          "custom_domain": true
+        } 
       ]
     }
   }
