@@ -1,6 +1,5 @@
 [build]
 minify = "on_release"
-filehash = false
 
 [[hooks]]
 stage = "post_build"
